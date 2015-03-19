@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_oS2aIKiDEeSdTcgam5EqnA" elementId="org.eclipse.e4.ide.application" bindingContexts="_oS2aKaiDEeSdTcgam5EqnA">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_oS2aIaiDEeSdTcgam5EqnA" label="Normlogic Navigator" width="1200" height="700">
+    <children xsi:type="advanced:PerspectiveStack" xmi:id="_kZajEKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.perspectivestack.0">
+      <children xsi:type="advanced:Perspective" xmi:id="_lKVCoKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.perspective.0">
+        <children xsi:type="basic:PartSashContainer" xmi:id="_U_JOQKrHEeSos_DhHne2zg" elementId="org.normlogic.navigator.app.partsashcontainer.1" horizontal="true">
+          <children xsi:type="basic:PartStack" xmi:id="_in474KrHEeSos_DhHne2zg" elementId="org.normlogic.navigator.app.partstack.2" containerData="2000">
+            <children xsi:type="basic:Part" xmi:id="_L2JpcKrHEeSos_DhHne2zg" elementId="org.normlogic.navigator.app.part.loaded" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.parts.LibraryPart" label="Loaded"/>
+          </children>
+          <children xsi:type="basic:PartSashContainer" xmi:id="_sN1hoKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.partsashcontainer.0" containerData="4000">
+            <children xsi:type="basic:PartStack" xmi:id="_vFCYQKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.partstack.0" containerData="2000">
+              <children xsi:type="basic:Part" xmi:id="_vdXYsKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.part.norms" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.parts.NormtextPart" label="Norms"/>
+            </children>
+            <children xsi:type="basic:PartStack" xmi:id="_CGDyIKiHEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.partstack.1" containerData="4000">
+              <children xsi:type="basic:Part" xmi:id="_v8Q7MKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.part.situation" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.parts.SituationPart" label="Situation">
+                <toolbar xmi:id="_ko0wsKiJEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.toolbar.0">
+                  <children xsi:type="menu:DirectToolItem" xmi:id="_q_6T8KsNEeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.directtoolitem.layout" label="Layout" iconURI="platform:/plugin/org.normlogic.navigator.app/icons/16/graph.png" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.app.LayoutHandler">
+                    <menu xmi:id="_rXj-8KsNEeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.menu.2">
+                      <children xsi:type="menu:DirectMenuItem" xmi:id="_2YK6wKsPEeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.directmenuitem.horizontalLayout" label="Horizontal Layout" type="Radio" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.app.LayoutHandler"/>
+                      <children xsi:type="menu:DirectMenuItem" xmi:id="_068SUKsQEeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.directmenuitem.topDown" label="Top Down" type="Radio" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.app.LayoutHandler"/>
+                      <children xsi:type="menu:DirectMenuItem" xmi:id="_CDqcEKsREeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.directmenuitem.bottomUp" label="Bottom Up" type="Radio" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.app.LayoutHandler"/>
+                      <children xsi:type="menu:DirectMenuItem" xmi:id="_HgiUcKsREeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.directmenuitem.radial" label="Radial" type="Radio" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.app.LayoutHandler"/>
+                      <children xsi:type="menu:DirectMenuItem" xmi:id="_RG-DMKsREeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.directmenuitem.simple" label="Simple" iconURI="" type="Radio" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.app.LayoutHandler"/>
+                    </menu>
+                  </children>
+                  <children xsi:type="menu:DirectToolItem" xmi:id="_fT-okKseEeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.directtoolitem.0" iconURI="platform:/plugin/org.normlogic.navigator.app/icons/16/zoom.png" type="Radio">
+                    <menu xmi:id="_fqviwKseEeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.menu.1">
+                      <children xsi:type="menu:DynamicMenuContribution" xmi:id="_g01XUKseEeSoVKAJfW8xDA" elementId="org.normlogic.navigator.app.dynamicmenucontribution.0" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.app.ZoomHandler"/>
+                    </menu>
+                  </children>
+                </toolbar>
+              </children>
+            </children>
+          </children>
+        </children>
+      </children>
+    </children>
+    <mainMenu xmi:id="_FVI9QKiHEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.menu.0">
+      <children xsi:type="menu:Menu" xmi:id="_trZ2YKiHEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.menu.file" label="File">
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_w31qQKiUEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.handledmenuitem.open" label="Open" command="_n8SrkKiUEeSdTcgam5EqnA"/>
+        <children xsi:type="menu:HandledMenuItem" xmi:id="_pklyAKiHEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.handledmenuitem.exit" label="Exit" command="_MuKZQKiHEeSdTcgam5EqnA"/>
+      </children>
+    </mainMenu>
+  </children>
+  <handlers xmi:id="_VVI2IKiHEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.exithandler" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.app.ExitHandler" command="_MuKZQKiHEeSdTcgam5EqnA"/>
+  <handlers xmi:id="_qg-O0KiUEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.openhandler" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.app.OpenHandler" command="_n8SrkKiUEeSdTcgam5EqnA"/>
+  <rootContext xmi:id="_oS2aKaiDEeSdTcgam5EqnA" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
+    <children xmi:id="_oS2aKqiDEeSdTcgam5EqnA" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
+    <children xmi:id="_oS2aK6iDEeSdTcgam5EqnA" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
+  </rootContext>
+  <commands xmi:id="_MuKZQKiHEeSdTcgam5EqnA" elementId="org.eclipse.ui.file.exit" commandName="ExitCommand"/>
+  <commands xmi:id="_n8SrkKiUEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.open" commandName="OpenCommand"/>
+  <addons xmi:id="_oS2aIqiDEeSdTcgam5EqnA" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
+  <addons xmi:id="_oS2aI6iDEeSdTcgam5EqnA" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
+  <addons xmi:id="_oS2aJKiDEeSdTcgam5EqnA" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
+  <addons xmi:id="_oS2aJaiDEeSdTcgam5EqnA" elementId="org.eclipse.e4.ui.workbench.commands.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.CommandProcessingAddon"/>
+  <addons xmi:id="_oS2aJqiDEeSdTcgam5EqnA" elementId="org.eclipse.e4.ui.workbench.handler.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.HandlerProcessingAddon"/>
+  <addons xmi:id="_oS2aJ6iDEeSdTcgam5EqnA" elementId="org.eclipse.e4.ui.workbench.contexts.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench/org.eclipse.e4.ui.internal.workbench.addons.ContextProcessingAddon"/>
+  <addons xmi:id="_oS2aKKiDEeSdTcgam5EqnA" elementId="org.eclipse.e4.ui.workbench.bindings.model" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.swt/org.eclipse.e4.ui.workbench.swt.util.BindingProcessingAddon"/>
+</application:Application>

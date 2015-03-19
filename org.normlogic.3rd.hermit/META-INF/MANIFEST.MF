@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1426778207266
+Build-Jdk: 1.7.0_51
+Built-By: gschwarz
+Bundle-ManifestVersion: 2
+Bundle-Name: org.normlogic.3rd.hermit
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: org.normlogic.3rd.hermit
+Bundle-Version: 0.0.1.201503191515
+Created-By: Apache Maven Bundle Plugin
+Export-Package: org.semanticweb.HermiT;uses:="org.semanticweb.owlapi.rea
+ soner,org.semanticweb.owlapi.model,org.semanticweb.owlapi.apibinding,or
+ g.semanticweb.owlapi.vocab,org.semanticweb.owlapi.util,org.semanticweb.
+ owlapi.reasoner.impl";version="0.0.1.201503191515"
+Ignore-Package: javax.xml.stream,org.apache.axiom.om.impl.builder,org.ap
+ ache.axiom.om
+Import-Package: javax.swing,javax.swing.event,javax.swing.text,javax.swi
+ ng.tree,javax.xml.namespace,org.semanticweb.owlapi.apibinding;version="
+ [3.4,4)",org.semanticweb.owlapi.model;version="[3.4,4)",org.semanticweb
+ .owlapi.reasoner;version="[3.4,4)",org.semanticweb.owlapi.reasoner.impl
+ ;version="[3.4,4)",org.semanticweb.owlapi.util;version="[3.4,4)",org.se
+ manticweb.owlapi.vocab;version="[3.4,4)"
+Tool: Bnd-1.50.0

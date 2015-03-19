@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core
+Bundle-SymbolicName: org.normlogic.navigator.core
+Bundle-Version: 0.0.1.qualifier
+Export-Package: org.normlogic.navigator.core,
+ org.normlogic.navigator.core.impl,
+ org.normlogic.navigator.core.util
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.core.runtime

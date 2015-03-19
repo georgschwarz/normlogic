@@ -1,0 +1,17 @@
+# binaries and temporaries
+bin/
+target/
+tmp/
+*.swp
+*.jar
+*.war
+*.ear
+*.class
+
+# eclipse
+.metadata/
+.recommenders/
+.launch
+.classpath
+.settings/
+*.target
