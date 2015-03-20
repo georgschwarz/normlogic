@@ -1,4 +1,4 @@
-![NormLogic logo][media/normlogic.png "NormLogic logo"]
+![NormLogic logo](media/normlogic.png "NormLogic logo")
 
 ### Introduction
 
