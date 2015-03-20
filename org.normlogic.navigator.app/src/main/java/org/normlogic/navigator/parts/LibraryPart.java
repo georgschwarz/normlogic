@@ -59,6 +59,7 @@ import org.normlogic.navigator.core.ISituationViewer;
 import org.normlogic.navigator.core.ModelContainer;
 import org.normlogic.navigator.core.impl.NormedWorld;
 import org.normlogic.navigator.util.IconPool;
+import org.normlogic.navigator.util.Messages;
 import org.normlogic.navigator.util.NormDecorator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -89,7 +90,7 @@ public class LibraryPart {
 				selectionService.setSelection(selection.getFirstElement());
 			}
 		});
-		treeViewer.setInput("Library");
+		treeViewer.setInput(Messages.LibraryPart_Titel);
 		treeViewer.expandAll();
 	}
 	

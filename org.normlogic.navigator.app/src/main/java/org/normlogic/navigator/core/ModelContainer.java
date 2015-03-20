@@ -23,6 +23,7 @@ import org.normlogic.navigator.core.IOntology;
 import org.normlogic.navigator.core.IPursuedNorms;
 import org.normlogic.navigator.core.impl.NormedWorld;
 import org.normlogic.navigator.kbimp.KnowledgeBaseOwlapi;
+import org.normlogic.navigator.util.Messages;
 
 /**
  * TODO: Document type ModelContainer.
@@ -108,7 +109,7 @@ public class ModelContainer implements ITreeContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if (inputElement == "Library") {
+		if (inputElement == Messages.LibraryPart_Titel) {
 			if (kb != null) {
 				return kb.getLoadedOntologies().toArray();
 			}

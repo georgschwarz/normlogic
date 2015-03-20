@@ -59,6 +59,7 @@ import org.normlogic.navigator.core.ModelContainer;
 import org.normlogic.navigator.core.impl.Individual;
 import org.normlogic.navigator.core.util.Tracker;
 import org.normlogic.navigator.util.IconPool;
+import org.normlogic.navigator.util.Messages;
 import org.normlogic.navigator.util.NormDecorator;
 import org.normlogic.navigator.util.NormImage;
 
@@ -156,7 +157,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
 	class AddIndividualAction extends Action {
 		private final IConcept concept;
 		public AddIndividualAction(final IConcept concept) {
-			super("Hinzufügen");
+			super(Messages.ContextMenu_AddIndividual);
 			this.concept = concept;
 		}
 		@Override
@@ -187,7 +188,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
          * Creates a new instance of {@link ContextMenu.MyAction}.
          */
         public AddAssertionAction(final IIndividual individual, final IProperty property, final IConcept concept, boolean isEnabled) {
-            super("Hinzufügen");
+            super(Messages.ContextMenu_AddAssertion);
             this.individual = individual;
             this.property = property;
             this.concept = concept;
@@ -217,7 +218,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         private final GraphNode node;
         
         public RemoveIndividualAction(final IIndividual individual, final GraphNode node) {
-            super(new String("Entfernen"));
+            super(new String(Messages.ContextMenu_DeleteIndividual));
             this.individual = individual;
             this.node = node;
         }
@@ -234,7 +235,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         private final GraphNode node;
         
         public CloseAssertionAction(final IIndividual individual, final GraphNode node) {
-            super(new String("Entfernen"));
+            super(new String(Messages.ContextMenu_DeleteAssertion));
             this.individual = individual;
             this.node = node;
         }
@@ -263,7 +264,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
     class PursueNormAction extends Action {
     	IPursuedNorms pursuedNorms;
         public PursueNormAction(final IIndividual individual, final Set<INorm> norms) {
-            super("Verfolgen");
+            super(Messages.ContextMenu_Pursue);
             pursuedNorms = individual.pursue(norms);
         }
         @Override
@@ -317,7 +318,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
     class ContextNormMenu extends NormMenuManager {
     	
     	ContextNormMenu(final Set<INorm> norms) {
-    		super("relevant für");
+    		super(Messages.ContextMenu_ConditionFor);
             if (norms.isEmpty()) return;
             for (INorm norm : norms) {
                	add(new ShowNormAction(norm));
@@ -332,7 +333,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
     	
     	ObligationNormMenu(final IIndividual individual, final IProperty property, final IConcept concept, final Set<INorm> norms) {
 
-    		super("folgt aus");
+    		super(Messages.ContextMenu_ConclusionOf);
     		
     		if  (norms.isEmpty()) return;
     		
