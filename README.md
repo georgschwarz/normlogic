@@ -16,13 +16,13 @@ The Project NormLogic uses description logic (DL) to represent the legal regulat
 
 ### How to build
 
-Due to maven tycho, a two steps are needed to build the "NormLogic Navigator":
+Due to maven tycho, two steps are needed to build the "NormLogic Navigator":
 
 ```
 cd ./org.normlogic.3rd
-mvn clean build
+mvn clean install
 cd ../org.normlogic.navigator
-mvn clean build
+mvn clean install
 ```
 
 The build produces an eclipse rcp application which is a kind of prototype. After the build, you can find the application in the folder `./org.normlogic.navigator.product/target/products`.
