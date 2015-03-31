@@ -18,7 +18,8 @@ import java.util.TreeSet;
 
 import org.normlogic.navigator.core.IConcept;
 import org.normlogic.navigator.core.IExpression;
-import org.normlogic.navigator.core.IHierarchyMaker;
+import org.normlogic.navigator.core.IHierarchy;
+import org.normlogic.navigator.core.IIndividual;
 import org.normlogic.navigator.core.INorm;
 import org.normlogic.navigator.core.INormedWorld;
 import org.normlogic.navigator.core.IOntology;
@@ -203,8 +204,8 @@ public class NormedWorld implements INormedWorld {
 	}
 	
 	@Override
-	public IHierarchyMaker<IConcept> getDomains() {
-		return new ConceptHierarchyMaker(kb, triplesByDomain.keySet());
+	public IHierarchy<IConcept> getDomains() {
+		return new ConceptHierarchy(kb, triplesByDomain.keySet());
 	}
 
 	Set<WorldTriple> getTriplesForPropertyRange(IProperty property,
@@ -213,5 +214,19 @@ public class NormedWorld implements INormedWorld {
 		triples.addAll(triplesByProperty.get(property));
 		triples.retainAll(triplesByRange.get(concept));
 		return triples;
+	}
+
+	@Override
+	public boolean contains(IConcept concept) {
+		return (triplesByDomain.containsKey(concept) || triplesByRange.containsKey(concept));
+	}
+
+	@Override
+	public IHierarchy<IConcept> retainIncluded(final Set<IConcept> concepts) {
+		Set<IConcept> includedConcepts = new HashSet<>();
+		includedConcepts.addAll(triplesByDomain.keySet());
+		includedConcepts.addAll(triplesByRange.keySet());
+		includedConcepts.retainAll(concepts);
+		return new ConceptHierarchy(kb, includedConcepts);
 	}
 }

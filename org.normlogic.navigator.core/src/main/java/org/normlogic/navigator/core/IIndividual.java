@@ -122,7 +122,7 @@ public interface IIndividual {
 	 * @param norms		norms to pursue
 	 * @return			the created IPursuedNorms object
 	 */
-	IPursuedNorms pursue(Set<INorm> norms);
+	IPursuedConclusion pursue(IProperty property, IConcept concept, Set<INorm> norms);
 	
 	/**
 	 * Checks if a potential assertion triple is relevant in respect to the
@@ -131,7 +131,27 @@ public interface IIndividual {
 	 * @param pursuedNorms	the IPursuedNorms object
 	 * @param property		the property of the potential relation triple
 	 * @param concept		the range concept of the potential relation triple
-	 * @returns				true if the assertion triple is relevant, false if not.
+	 * @return				true if the assertion triple is relevant, false if not.
 	 */
-	boolean hasPursuedTriple(IPursuedNorms pursuedNorms, IProperty property, IConcept concept);
+	boolean hasPursuedTriple(IPursuedConclusion pursuedNorms, IProperty property, IConcept concept);
+	
+	/**
+	 * Recalculated the asserted types of this individual.
+	 */
+	void updateTypes();
+	
+	/**
+	 * Get the types of this individual
+	 * 
+	 * @return types as an IConcept hierarchy 
+	 */
+	IHierarchy<IConcept> getTypes();
+
+	/**
+	 * Assert individual to an explicit type
+	 * 
+	 * @param concept addition type of individual
+	 * @return	true is assertion succeeded, false if not.
+	 */
+	boolean assertType(final IConcept concept);
 }

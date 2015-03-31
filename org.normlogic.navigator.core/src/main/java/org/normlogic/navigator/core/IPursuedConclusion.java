@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Georg Schwarz
  *
  */
-public interface IPursuedNorms {
+public interface IPursuedConclusion {
 	/**
 	 * Updates the states of the norms in respect to the individual of the
 	 * pursued norms, specifically if pursued norms are already fulfilled or 
@@ -58,6 +58,10 @@ public interface IPursuedNorms {
 	 * @return				true if individual has to be substantiated, false if not
 	 */
 	boolean relevantFor(INormedWorld world, IIndividual individual);
+	
+	boolean dependsOn(IIndividual individual, IProperty property, IConcept concept);
+	
+	boolean dependsOn(IIndividual individual);
 	
 	/**
 	 * Helper method to get the pursued Norms.

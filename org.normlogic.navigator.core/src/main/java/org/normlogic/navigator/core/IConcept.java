@@ -23,6 +23,13 @@ import java.util.Set;
  */
 public interface IConcept extends IModelEntity, Comparable<IConcept> {
 	/**
+	 * Returns a human readable name of the concept
+	 * 
+	 * @return	human readable name as a string.
+	 */
+	String getLabel();
+
+	/**
 	 * Returns all subconcepts in the sense of an inclusion, so if C is as subconcept
 	 * of D, every individual of type C has also type D. The subconcepts returned should
 	 * be identified by reasoning.

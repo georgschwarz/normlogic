@@ -11,6 +11,8 @@
 
 package org.normlogic.navigator.core;
 
+import java.util.Set;
+
 /**
  * A normed world is an universe of possible concepts and relations, which 
  * are relevant to a set of norms.
@@ -25,5 +27,21 @@ public interface INormedWorld {
 	 *  
 	 * @return set of domain concepts
 	 */
-	IHierarchyMaker<IConcept> getDomains();
+	IHierarchy<IConcept> getDomains();
+	
+	/**
+	 * Check if Concept is part of the normed world.
+	 * 
+	 * @param concept to be checked
+	 * @return true if concept is part of the normed world, false if not.
+	 */
+	boolean contains(final IConcept concept);
+	
+	/**
+	 * Returns those concepts, which are part of the normed world.
+	 * 
+	 * @param concepts set of concepts, which will be filtered
+	 * @return set of concepts found in the normed world
+	 */
+	IHierarchy<IConcept> retainIncluded(final Set<IConcept> concepts);
 }

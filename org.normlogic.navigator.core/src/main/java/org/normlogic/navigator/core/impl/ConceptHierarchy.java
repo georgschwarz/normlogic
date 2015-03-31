@@ -14,14 +14,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.normlogic.navigator.core.IConcept;
-import org.normlogic.navigator.core.IHierarchyMaker;
+import org.normlogic.navigator.core.IHierarchy;
 
-public class ConceptHierarchyMaker implements IHierarchyMaker<IConcept> {
+public class ConceptHierarchy implements IHierarchy<IConcept> {
 
 	KnowledgeBase kb;
 	Set<IConcept> concepts;
 	
-	public ConceptHierarchyMaker(KnowledgeBase kb, Set<IConcept> concepts) {
+	public ConceptHierarchy(KnowledgeBase kb, Set<IConcept> concepts) {
 		this.kb = kb;
 		this.concepts = concepts;
 	}
@@ -40,4 +40,32 @@ public class ConceptHierarchyMaker implements IHierarchyMaker<IConcept> {
 		return subConcepts;
 	}
 
+	private Set<IConcept> getLeafEntities(IConcept concept) {
+		Set<IConcept> leafConcepts = new TreeSet<>();
+		Set<IConcept> subConcepts = concept.getSubConcepts(true);
+		subConcepts.retainAll(concepts);
+		if (subConcepts.isEmpty()) {
+			leafConcepts.add(concept);
+		}
+		else {
+			for (IConcept subConcept : subConcepts) {
+				leafConcepts.addAll(getLeafEntities(subConcept));
+			}
+		}
+		return leafConcepts;
+	}
+	
+	@Override
+	public Set<IConcept> getLeafEntities() {
+		Set<IConcept> leafConcepts = new TreeSet<>();
+		for (IConcept concept : concepts) {
+			leafConcepts.addAll(getLeafEntities(concept));
+		}
+		return leafConcepts;
+	}
+
+	@Override
+	public Set<IConcept> getEntites() {
+		return concepts;
+	}
 }

@@ -10,8 +10,10 @@
  ******************************************************************************/
 package org.normlogic.navigator.parts;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -45,11 +47,15 @@ import org.eclipse.zest.core.widgets.GraphNode;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.normlogic.navigator.core.Event;
 import org.normlogic.navigator.core.IAssertionTriple;
+import org.normlogic.navigator.core.IConcept;
+import org.normlogic.navigator.core.IHierarchy;
 import org.normlogic.navigator.core.IIndividual;
 import org.normlogic.navigator.core.IKnowledgeBase;
+import org.normlogic.navigator.core.INeighborhoodViewer;
 import org.normlogic.navigator.core.INorm;
 import org.normlogic.navigator.core.INormedWorld;
-import org.normlogic.navigator.core.IPursuedNorms;
+import org.normlogic.navigator.core.IProperty;
+import org.normlogic.navigator.core.IPursuedConclusion;
 import org.normlogic.navigator.core.ISituationViewer;
 import org.normlogic.navigator.core.impl.NormedWorld;
 import org.normlogic.navigator.parts.ContextMenu;
@@ -62,7 +68,7 @@ public class SituationPart implements ISituationViewer {
     private ZoomManager zoom;
     INormedWorld normedWorld;
     private IEventBroker broker;
-    IPursuedNorms pursuedNorms;
+    IPursuedConclusion pursuedConclusion;
     IKnowledgeBase kb;
 	
     @Inject
@@ -93,6 +99,7 @@ public class SituationPart implements ISituationViewer {
 	private void ontologyLoaded(@UIEventTopic(Event.ONTOLOGY_LOADED) 
 	    IKnowledgeBase kb) {
 		this.kb = kb;
+		kb.updateIndividualTypes();
 		kb.visualize(this);
 	} 
 
@@ -101,6 +108,7 @@ public class SituationPart implements ISituationViewer {
 	private void ontologyChanged(@UIEventTopic(Event.ONTOLOGY_CHANGED) 
 	    IKnowledgeBase kb) {
 		this.kb = kb;
+		kb.updateIndividualTypes();
 		kb.visualize(this);
 	} 
 
@@ -116,8 +124,8 @@ public class SituationPart implements ISituationViewer {
 	@Inject
 	@Optional
 	private void pursueNorm(@UIEventTopic(Event.PURSUE_NORM) 
-	    IPursuedNorms norms) {
-		pursuedNorms = norms;
+	    IPursuedConclusion norms) {
+		pursuedConclusion = norms;
 		if (kb != null) {
 			kb.visualize(this);
 		}
@@ -137,6 +145,11 @@ public class SituationPart implements ISituationViewer {
         if (graphNode == null) {
         	graphNode = new GraphNode(graph.getGraphControl(), SWT.NONE, individual.getLabel(), individual);
         }
+        String tooltip = new String("Types:\n");
+        for (IConcept type : normedWorld.retainIncluded(individual.getTypes().getEntites()).getEntites()) {
+        	tooltip = tooltip + type.getLabel() + "\n";
+        }
+        graphNode.setTooltip(new Label(tooltip.trim()));
         Set<INorm> norms = individual.getObligationNorms(normedWorld);
         ImageDescriptor image;
         if (norms.isEmpty()) {
@@ -164,10 +177,25 @@ public class SituationPart implements ISituationViewer {
    		if (hasToBeFullfilled) {
    			image = new DecorationOverlayIcon(image.createImage(), IconPool.overlayCaution, IDecoration.BOTTOM_RIGHT);
    		}
-        if (pursuedNorms != null) {
-	        if (pursuedNorms.relevantFor(normedWorld, individual)) {
-	     		image = new DecorationOverlayIcon(image.createImage(), IconPool.overlayStar, IDecoration.BOTTOM_RIGHT);
+   		final Map<IProperty, IConcept> pursuedRelations = new HashMap<>();
+        if (pursuedConclusion != null) {
+	        if (pursuedConclusion.relevantFor(normedWorld, individual)) {
+	        	individual.renderNeighborhood(normedWorld, new INeighborhoodViewer() {
+					@Override
+					public void add(IProperty property, IHierarchy<IConcept> concepts) {
+						for (IConcept concept: concepts.getLeafEntities()) {
+							if (!individual.hasAssertion(property, concept)) {
+								if (individual.hasPursuedTriple(pursuedConclusion, property, concept)) {
+									pursuedRelations.put(property, concept);
+								}
+							}
+						}
+					}
+				});
 	        }
+        }
+        if (!pursuedRelations.isEmpty()) {
+     		image = new DecorationOverlayIcon(image.createImage(), IconPool.overlayStar, IDecoration.BOTTOM_RIGHT);
         }
         graphNode.setImage(image.createImage());
         return graphNode;

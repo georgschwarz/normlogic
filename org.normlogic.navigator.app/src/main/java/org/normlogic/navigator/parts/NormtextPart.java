@@ -29,14 +29,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.normlogic.navigator.core.Event;
 import org.normlogic.navigator.core.INorm;
-import org.normlogic.navigator.core.IPursuedNorms;
+import org.normlogic.navigator.core.IPursuedConclusion;
 import org.normlogic.navigator.util.NormDecorator;
 
 public class NormtextPart {
 
 	CLabel txtLabel;
 	Text txtViewer;
-	IPursuedNorms pursuedNorms;
+	IPursuedConclusion pursuedNorms;
 	INorm norm;
 
 	@Inject
@@ -59,7 +59,7 @@ public class NormtextPart {
 	@Inject
 	@Optional
 	private void pursueNorm(@UIEventTopic(Event.PURSUE_NORM) 
-	    IPursuedNorms norms) {
+	    IPursuedConclusion norms) {
 		pursuedNorms = norms;
 		setText(norm);
 	} 

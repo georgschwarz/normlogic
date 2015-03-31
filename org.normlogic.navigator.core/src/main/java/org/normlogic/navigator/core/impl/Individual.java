@@ -12,18 +12,22 @@ package org.normlogic.navigator.core.impl;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.normlogic.navigator.core.IAddEntityDialog;
 import org.normlogic.navigator.core.IConcept;
+import org.normlogic.navigator.core.IHierarchy;
 import org.normlogic.navigator.core.IIndividual;
 import org.normlogic.navigator.core.INeighborhoodViewer;
 import org.normlogic.navigator.core.INorm;
 import org.normlogic.navigator.core.INormedWorld;
 import org.normlogic.navigator.core.IProperty;
-import org.normlogic.navigator.core.IPursuedNorms;
+import org.normlogic.navigator.core.IPursuedConclusion;
 
 public class Individual extends ModelEntity implements IIndividual {
 
+	final Set<IConcept> types = new HashSet<>();
+	
 	public Individual(KnowledgeBase kb, Object individual) {
 		super(kb, individual);
 	}
@@ -32,13 +36,19 @@ public class Individual extends ModelEntity implements IIndividual {
 	public void renderNeighborhood(INormedWorld world, INeighborhoodViewer viewer) {
 		if (world instanceof NormedWorld) {
 			NormedWorld normedWorld = (NormedWorld)world;
+			// TODO: check if asserted types have to be reasoned...
 			Set<IConcept> types = kb.getAssertedTypes(this);
+			types = normedWorld.retainIncluded(types).getEntites();
+			Set<IProperty> properties = new TreeSet<>();
 			for (IConcept type : types) {
-				Set<IProperty> properties = normedWorld.getPropertiesForDomain(type);
-				for (IProperty property : properties) {
-					Set<IConcept> ranges = normedWorld.getRangesForDomainProperty(type, property);
-					viewer.add(property, new ConceptHierarchyMaker(kb, ranges));
+				properties.addAll(normedWorld.getPropertiesForDomain(type));
+			}
+			for (IProperty property : properties) {
+				Set<IConcept> ranges = new TreeSet<>();
+				for (IConcept type : types) {
+					ranges.addAll(normedWorld.getRangesForDomainProperty(type, property));
 				}
+				viewer.add(property, new ConceptHierarchy(kb, ranges));
 			}
 		}
 	}
@@ -119,8 +129,8 @@ public class Individual extends ModelEntity implements IIndividual {
 	}
 
 	@Override
-	public IPursuedNorms pursue(Set<INorm> norms) {
-		return new PursuedNorms(this, norms);
+	public IPursuedConclusion pursue(IProperty property, IConcept concept, Set<INorm> norms) {
+		return new PursuedConclusion(this, property, concept, norms, kb);
 	}
 
 	@Override
@@ -129,7 +139,22 @@ public class Individual extends ModelEntity implements IIndividual {
 	}
 
 	@Override
-	public boolean hasPursuedTriple(IPursuedNorms pursuedNorms, IProperty property, IConcept concept) {
-		return kb.hasIndividualPursuedTriple(this, pursuedNorms.getNorms(), property, concept);
+	public boolean hasPursuedTriple(IPursuedConclusion pursuedConclusion, IProperty property, IConcept concept) {
+		return kb.dependNormedConclusionOnTriple(this, pursuedConclusion.getNorms(), property, concept);
+	}
+
+	@Override
+	public void updateTypes() {
+		kb.updateTypes(this, types);
+	}
+
+	@Override
+	public IHierarchy<IConcept> getTypes() {
+		return new ConceptHierarchy(kb, types);
+	}
+
+	@Override
+	public boolean assertType(final IConcept concept) {
+		return kb.assertType(this, concept);		
 	}
 }

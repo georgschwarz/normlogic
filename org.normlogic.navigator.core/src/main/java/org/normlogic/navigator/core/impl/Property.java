@@ -10,12 +10,18 @@
  ******************************************************************************/
 package org.normlogic.navigator.core.impl;
 
+import org.normlogic.navigator.core.IConcept;
 import org.normlogic.navigator.core.IProperty;
 
 public class Property extends ModelEntity implements IProperty {
 
 	public Property(KnowledgeBase kb, Object property) {
 		super(kb, property);
+	}
+	
+	@Override
+	public int compareTo(IProperty o) {
+		return getLabel().compareTo(o.getLabel());
 	}
 
 	@Override

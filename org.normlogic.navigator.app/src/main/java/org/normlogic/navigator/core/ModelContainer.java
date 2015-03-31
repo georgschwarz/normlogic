@@ -20,7 +20,7 @@ import org.normlogic.navigator.core.IKnowledgeBase;
 import org.normlogic.navigator.core.IKnowledgeBaseChangeListener;
 import org.normlogic.navigator.core.INormedWorld;
 import org.normlogic.navigator.core.IOntology;
-import org.normlogic.navigator.core.IPursuedNorms;
+import org.normlogic.navigator.core.IPursuedConclusion;
 import org.normlogic.navigator.core.impl.NormedWorld;
 import org.normlogic.navigator.kbimp.KnowledgeBaseOwlapi;
 import org.normlogic.navigator.util.Messages;
@@ -33,13 +33,14 @@ public class ModelContainer implements ITreeContentProvider {
    
     private IKnowledgeBase kb;  
     private INormedWorld world;
-    private IPursuedNorms pursuedNorms;
+    private IPursuedConclusion pursuedNorms;
     
     static private ModelContainer container = new ModelContainer();
     static public ModelContainer getContainer() {return container;}
     
     public ModelContainer() {
     	try {
+    		// TODO has to be changed to a more generic way...
 			kb = new KnowledgeBaseOwlapi();
 			world = kb.getNormedWorld();
 		} catch (Exception e) {
@@ -82,7 +83,7 @@ public class ModelContainer implements ITreeContentProvider {
     }
     
     
-    public void setPursuedNorms(IPursuedNorms pursuedNorms) {
+    public void setPursuedNorms(IPursuedConclusion pursuedNorms) {
     	this.pursuedNorms = pursuedNorms;
     }
     

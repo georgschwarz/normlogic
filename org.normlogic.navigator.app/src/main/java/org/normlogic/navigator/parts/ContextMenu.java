@@ -12,6 +12,7 @@ package org.normlogic.navigator.parts;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.jface.action.Action;
@@ -48,13 +49,13 @@ import org.eclipse.zest.core.widgets.GraphNode;
 import org.normlogic.navigator.core.Event;
 import org.normlogic.navigator.core.IAddEntityDialog;
 import org.normlogic.navigator.core.IConcept;
-import org.normlogic.navigator.core.IHierarchyMaker;
+import org.normlogic.navigator.core.IHierarchy;
 import org.normlogic.navigator.core.IIndividual;
 import org.normlogic.navigator.core.INeighborhoodViewer;
 import org.normlogic.navigator.core.INorm;
 import org.normlogic.navigator.core.INormedWorld;
 import org.normlogic.navigator.core.IProperty;
-import org.normlogic.navigator.core.IPursuedNorms;
+import org.normlogic.navigator.core.IPursuedConclusion;
 import org.normlogic.navigator.core.ModelContainer;
 import org.normlogic.navigator.core.impl.Individual;
 import org.normlogic.navigator.core.util.Tracker;
@@ -72,7 +73,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
     
     private INormedWorld currentWorld;
     private IEventBroker broker;
-    private IPursuedNorms pursuedNorms;
+    private IPursuedConclusion pursuedConclusion;
     
     /**
      * Creates a new instance of {@link ContextMenu}.
@@ -126,32 +127,34 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
     
 	private void createBlankMenu(IMenuManager menu) {
 		if (currentWorld != null) {
-			IHierarchyMaker<IConcept> conceptHierarchy = currentWorld.getDomains();
+			IHierarchy<IConcept> conceptHierarchy = currentWorld.getDomains();
 			for (IConcept concept : conceptHierarchy.getTopLevelEntities()) {
 				createConceptMenu(menu, concept, conceptHierarchy);
 			}
 		}
 	}
 	
-	private void createConceptMenu(IMenuManager menu, IConcept concept, IHierarchyMaker<IConcept> conceptHierachy) {
-		MenuManager addIndividualMenu = new MenuManager(concept.getLabel());
-        menu.add(addIndividualMenu);
-        AddIndividualAction action = new AddIndividualAction(concept); 
-        addIndividualMenu.add(action);
+	private void createConceptMenu(IMenuManager menu, IConcept concept, IHierarchy<IConcept> conceptHierachy) {
         Set<INorm> norms = concept.getObligationNorms(currentWorld);
-        if (norms.isEmpty()) {
-        	addIndividualMenu.setImageDescriptor(IconPool.tripleInContext);
+    	Set<IConcept> subConcepts = conceptHierachy.getDirectChildEntitesOf(concept);
+        if (!norms.isEmpty() || !subConcepts.isEmpty()) {
+        	MenuManager addIndividualMenu = new MenuManager(concept.getLabel());
+        	menu.add(addIndividualMenu);
+        	AddIndividualAction action = new AddIndividualAction(concept); 
+        	addIndividualMenu.add(action);
+        	if (norms.isEmpty()) {
+        		addIndividualMenu.setImageDescriptor(IconPool.tripleInContext);
+        	}
+        	else {
+        		addIndividualMenu.setImageDescriptor(IconPool.tripleInConclusion);
+        	}
+        	if (!subConcepts.isEmpty()) {
+        		addIndividualMenu.add(new Separator());
+        		for (IConcept subConcept : subConcepts) {
+        			createConceptMenu(addIndividualMenu, subConcept, conceptHierachy);
+        		}
+        	}
         }
-        else {
-        	addIndividualMenu.setImageDescriptor(IconPool.tripleInConclusion);
-        }
-		Set<IConcept> subConcepts = conceptHierachy.getDirectChildEntitesOf(concept);
-		if (!subConcepts.isEmpty()) {
-			addIndividualMenu.add(new Separator());
-			for (IConcept subConcept : subConcepts) {
-				createConceptMenu(addIndividualMenu, subConcept, conceptHierachy);
-			}
-		}
 	}
 	
 	class AddIndividualAction extends Action {
@@ -175,6 +178,21 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
 	                    }
 				}
 			});
+		}
+	}
+	
+	
+	class SpecializeIndividualAction extends Action {
+		private final IConcept concept;
+		private final IIndividual individual;
+		public SpecializeIndividualAction(final IIndividual individual, final IConcept concept) {
+			super(Messages.ContextMenu_Specialize);
+			this.concept = concept;
+			this.individual = individual;
+		}
+		@Override
+	    public void run() {
+			individual.assertType(concept);
 		}
 	}
 
@@ -252,7 +270,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         public ShowNormAction(final INorm norm) {
             super(norm.getLabel());
             this.norm = norm;
-           	setImageDescriptor(new NormDecorator(norm).createImage(pursuedNorms));
+           	setImageDescriptor(new NormDecorator(norm).createImage(pursuedConclusion));
         }
         @Override
         public void run() {
@@ -261,15 +279,15 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         
     }
     
-    class PursueNormAction extends Action {
-    	IPursuedNorms pursuedNorms;
-        public PursueNormAction(final IIndividual individual, final Set<INorm> norms) {
+    class PursueAction extends Action {
+    	IPursuedConclusion pursuedNorms;
+        public PursueAction(final IIndividual individual, final IProperty property, final IConcept concept, final Set<INorm> norms) {
             super(Messages.ContextMenu_Pursue);
-            pursuedNorms = individual.pursue(norms);
+            pursuedNorms = individual.pursue(property, concept, norms);
         }
         @Override
         public void run() {
-        	ContextMenu.this.pursuedNorms = pursuedNorms;
+        	ContextMenu.this.pursuedConclusion = pursuedNorms;
         	ModelContainer.getContainer().setPursuedNorms(pursuedNorms);
         	broker.send(Event.PURSUE_NORM, pursuedNorms);
         }
@@ -369,7 +387,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
     	int state = NONE;
     	boolean isPursued = false;
     	
-    	ConceptMenu(final IIndividual individual, final IProperty property, final IConcept concept, final IHierarchyMaker<IConcept> conceptHierarchy) {
+    	ConceptMenu(final IIndividual individual, final IProperty property, final IConcept concept, final IHierarchy<IConcept> conceptHierarchy) {
     		
     		super(concept.getLabel());
             
@@ -393,10 +411,12 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
             
             if (!obligationNorms.isEmpty()) {
             	add(new Separator());
-                add(new PursueNormAction(individual, obligationNorms));
+                add(new PursueAction(individual, property, concept, obligationNorms));
             }
             
-            if (pursuedNorms != null && isAssertable) {
+            if (pursuedConclusion != null && isAssertable) {
+            	isPursued = pursuedConclusion.dependsOn(individual, property, concept);
+            	/*
             	if (pursuedNorms.relevantFor(currentWorld, individual, property, concept)) {
             		if (!individual.hasAssertion(property, concept)) {
             			if (individual.hasPursuedTriple(pursuedNorms, property, concept)) {
@@ -404,6 +424,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
             			}
             		}
             	}
+            	*/
             }
 
             for (IConcept subConcept : conceptHierarchy.getDirectChildEntitesOf(concept)) {
@@ -419,7 +440,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
     
     class PropertyMenu extends MenuManager {
     	
-    	PropertyMenu(final IIndividual individual, final IProperty property, final IHierarchyMaker<IConcept> conceptHierarchy) {
+    	PropertyMenu(final IIndividual individual, final IProperty property, final IHierarchy<IConcept> conceptHierarchy) {
     		
         	super(property.getLabel());
 
@@ -434,6 +455,23 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         	}
         	
     		setImageDescriptor(findImageFor(state, isPursued));
+    	}
+    }
+
+    class SpecializeMenu extends MenuManager {
+    	
+    	SpecializeMenu(final IIndividual individual, final IConcept concept) {
+    		
+        	super(concept.getLabel());
+        	add(new SpecializeIndividualAction(individual, concept));
+
+        	Set<IConcept> subConcepts = currentWorld.retainIncluded(concept.getSubConcepts(true)).getEntites();
+        	if (!subConcepts.isEmpty()) {
+        		add(new Separator());
+            	for (IConcept subConcept : subConcepts) {
+            		add(new SpecializeMenu(individual, subConcept));
+            	}
+        	}
     	}
     }
 
@@ -465,9 +503,25 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
             return;
         }
         final IIndividual individual = (IIndividual)data;
+        
+        MenuManager specializeMenu = new MenuManager(Messages.ContextMenu_Specialize);
+        menu.add(specializeMenu);
+        IHierarchy<IConcept> types = currentWorld.retainIncluded(individual.getTypes().getEntites());
+        
+        for (IConcept concept : types.getTopLevelEntities()) {
+        	IHierarchy<IConcept> subConcepts = currentWorld.retainIncluded(concept.getSubConcepts(true));
+        	for (IConcept subConcept : subConcepts.getEntites()) {
+        		specializeMenu.add(new SpecializeMenu(individual, subConcept));
+        	}
+        }
+
+        if (!specializeMenu.isEmpty()) {
+        	menu.add(new Separator());
+        }
+        
         individual.renderNeighborhood(currentWorld, new INeighborhoodViewer() {
             @Override
-            public void add(final IProperty property, final IHierarchyMaker<IConcept> conceptHierarchy) {
+            public void add(final IProperty property, final IHierarchy<IConcept> conceptHierarchy) {
                 menu.add(new PropertyMenu(individual, property, conceptHierarchy));
             }
         });

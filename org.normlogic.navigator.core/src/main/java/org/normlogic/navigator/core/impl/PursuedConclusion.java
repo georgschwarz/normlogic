@@ -14,21 +14,29 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.normlogic.navigator.core.IConcept;
+import org.normlogic.navigator.core.IHierarchy;
 import org.normlogic.navigator.core.IIndividual;
+import org.normlogic.navigator.core.INeighborhoodViewer;
 import org.normlogic.navigator.core.INorm;
 import org.normlogic.navigator.core.INormedWorld;
 import org.normlogic.navigator.core.IProperty;
-import org.normlogic.navigator.core.IPursuedNorms;
+import org.normlogic.navigator.core.IPursuedConclusion;
 
-public class PursuedNorms implements IPursuedNorms {
+public class PursuedConclusion implements IPursuedConclusion {
 	
 	Set<INorm> norms;
 	IIndividual individual;
+	IProperty property;
+	IConcept concept;
 	boolean isAccomplished = false;
+	KnowledgeBase kb;
 	
-	PursuedNorms(IIndividual individual, Set<INorm> norms) {
+	PursuedConclusion(IIndividual individual, IProperty property, IConcept concept, Set<INorm> norms, KnowledgeBase kb) {
 		this.individual = individual;
+		this.property = property;
+		this.concept = concept;
 		this.norms = norms;
+		this.kb = kb;
 		update();
 	}
 
@@ -72,6 +80,26 @@ public class PursuedNorms implements IPursuedNorms {
 		}
 		return norms;
 	}
-	
-		
+
+	@Override
+	public boolean dependsOn(IIndividual individual, IProperty property,
+			IConcept concept) {
+		if (isAccomplished) return false;
+		return kb.dependNormedConclusionOnTriple(individual, norms, property, concept);
+	}
+
+	@Override
+	public boolean dependsOn(final IIndividual individual) {
+		if (isAccomplished) return false;
+		final Set<Boolean> result = new HashSet<>();
+		individual.renderNeighborhood(kb.getNormedWorld(), new INeighborhoodViewer() {
+			@Override
+			public void add(IProperty property, IHierarchy<IConcept> concepts) {
+				for (IConcept concept : concepts.getLeafEntities()) {
+					result.add(new Boolean(kb.dependNormedConclusionOnTriple(individual, norms, property, concept)));
+				}
+			}
+		});
+		return result.contains(new Boolean(true));
+	}
 }

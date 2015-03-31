@@ -39,6 +39,7 @@ public interface IKnowledgeBase {
 	 */
 	IOntology load(final String fileName) throws Exception;
 	void addChangeListener(final IKnowledgeBaseChangeListener listener);
-	INormedWorld getNormedWorld() throws Exception;
+	INormedWorld getNormedWorld();
 	Set<IOntology> getLoadedOntologies();
+	void updateIndividualTypes();
 }

@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.normlogic.navigator.core.IAssertionTriple;
 import org.normlogic.navigator.core.IConcept;
 import org.normlogic.navigator.core.IExpression;
+import org.normlogic.navigator.core.IHierarchy;
 import org.normlogic.navigator.core.IIndividual;
 import org.normlogic.navigator.core.IKnowledgeBaseChangeListener;
 import org.normlogic.navigator.core.INorm;
@@ -79,6 +80,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyAlreadyExistsException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLQuantifiedObjectRestriction;
+import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.ReasonerProgressMonitor;
 import org.semanticweb.owlapi.util.OWLClassExpressionVisitorAdapter;
@@ -102,53 +104,7 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
     PointerMap<IExpression, Expression, OWLClassExpression> EXPRESSION = new PointerMap<>(this, Expression.class);
         
     
-    class PointerMap<K, S extends K, V> {
-    	Map<K, V> map = new HashMap<>();
-    	KnowledgeBaseOwlapi kb;
-    	Class<S> implementationClass;
-    	PointerMap(KnowledgeBaseOwlapi kb, Class<S> implementationClass) {
-    		this.kb = kb;
-    		this.implementationClass = implementationClass;
-    	}
-    	K createFrom(V owlObject) {
-			try {
-	    		S implementation;
-				implementation = implementationClass.getConstructor(KnowledgeBase.class, Object.class).newInstance(kb, owlObject);
-	    		map.put(implementation, owlObject);
-	    		return implementation;     		
-			} catch (InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
-			}
-			return null;
-    	}
-    	V wrap(K pointer) {
-    		return map.get(pointer);
-    	}
-    	Set<K> wrapFromValue(V value) {
-    		// slow, so don´t use it in performance crititcal sections ...
-    		Set<Map.Entry<K,V>> entries = map.entrySet();
-    		Set<K> keys = new HashSet<>();
-    		for (Map.Entry<K, V> entry : entries) {
-    			if (value.equals(entry.getValue())) {
-    				keys.add(entry.getKey());
-    			}
-    		}
-    		return keys;
-    	}
-    	void delete(K key) {
-    		map.remove(key);
-    	}
-    	void deleteFromValue(V value) {
-    		for (K key : wrapFromValue(value)) {
-    			map.remove(key);
-    		}
-    	}
-    }
-
-	
-	public KnowledgeBaseOwlapi() throws Exception {
+    public KnowledgeBaseOwlapi() throws Exception {
 		baseOntology = manager.createOntology();
         Configuration configuration = new Configuration();
         configuration.bufferChanges = false;
@@ -215,13 +171,13 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 		OWLQuantifiedObjectRestriction restriction;
 		Set<OWLClass> lastClasses;
 		Set<OWLClass> classes = new HashSet<OWLClass>();
+		
 		 
         ExpressionVisitor(NormedWorld world, Set<NormContext> normedContext, Set<OWLClass> lastClasses, OWLQuantifiedObjectRestriction restriction /*OWLObjectProperty lastProperty*/) {
             super();
             this.world = world;
             this.normContext = normedContext;
             this.lastClasses = lastClasses;
-            // this.lastProperty = lastProperty;
             this.restriction = restriction;
         }
         
@@ -256,15 +212,13 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
         @Override
         public void visit(OWLObjectSomeValuesFrom desc) {
         	if (!desc.getProperty().isAnonymous()) {
-	        	// OWLObjectProperty property = desc.getProperty().asOWLObjectProperty();
-	        	desc.getFiller().accept(new ExpressionVisitor(world, normContext, classes, desc /*property*/));
+	        	desc.getFiller().accept(new ExpressionVisitor(world, normContext, classes, desc));
         	}
         }
         
         @Override
         public void visit(OWLObjectAllValuesFrom desc) {
-        	// OWLObjectProperty property = desc.getProperty().asOWLObjectProperty();
-        	desc.getFiller().accept(new ExpressionVisitor(world, normContext, classes, desc /* property */));
+        	desc.getFiller().accept(new ExpressionVisitor(world, normContext, classes, desc));
         }
         @Override
         public void visit(OWLObjectComplementOf desc) {
@@ -295,10 +249,7 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 				if (annotation.getValue() instanceof IRI) {
 					IRI iri = (IRI)annotation.getValue();
 					INorm norm = NORM.createFrom(OWLManager.getOWLDataFactory().getOWLNamedIndividual(iri));
-					Set<IOntology> registeredOntologies = ONTOLOGY.wrapFromValue(ontology);
-					for (IOntology registeredOntology : registeredOntologies) {
-						world.mapNormToOntology(registeredOntology, norm);
-					}
+					world.mapNormToOntology(ONTOLOGY.wrapFromValue(ontology), norm);
 					NormedWorld.NormContext normContext = world.new NormContext(norm, type);
 					normedContext.add(normContext);
 					normContextToExpression.put(normContext, expression);
@@ -570,18 +521,6 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 
 
 	@Override
-	protected Set<IConcept> getTypes(IIndividual individual) {
-		Set<IConcept> result = new HashSet<>();
-		OWLNamedIndividual owlIndividual = INDIVIDUAL.wrap(individual);
-		Set<OWLClass> domainClasses = reasoner.getTypes(owlIndividual, false).getFlattened();
-		for (OWLClass domainClass : domainClasses) {
-			result.add(CONCEPT.createFrom(domainClass));
-		}
-		return result;
-	}
-
-
-	@Override
 	protected Set<IConcept> getTopLevelConceptsOf(Set<IConcept> concepts) {
 		Set<IConcept> topConcepts = new HashSet<>();
 		for  (IConcept concept : concepts) {
@@ -593,9 +532,8 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 			}
 			superConcepts.retainAll(concepts);
 			if (superConcepts.isEmpty()) {
-				superConcepts.add(concept);
+				topConcepts.add(concept);
 			}
-			topConcepts.addAll(superConcepts);
 		}
 		return topConcepts;
 	}
@@ -657,7 +595,7 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 	}
 
 	@Override
-	public INormedWorld getNormedWorld() throws Exception {
+	public INormedWorld getNormedWorld() {
 		return world;
 	}
 
@@ -749,7 +687,7 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 		OWLClass owlConcept = CONCEPT.wrap(concept);
 		Set<OWLNamedIndividual> values = reasoner.getObjectPropertyValues(owlIndividual, owlProperty).getFlattened();
 		for (OWLNamedIndividual value : values) {
-			if (reasoner.hasType(value, owlConcept, true)) {
+			if (reasoner.hasType(value, owlConcept, false)) {
 				return true;
 			}
 		}
@@ -757,23 +695,52 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 	}
 
 	@Override
-	protected boolean hasIndividualPursuedTriple(IIndividual individual, Set<INorm> norms, IProperty property, IConcept concept) {
+	protected boolean dependNormedConclusionOnTriple(IIndividual individual, Set<INorm> norms, IProperty property, IConcept concept) {
 		OWLNamedIndividual owlIndividual = INDIVIDUAL.wrap(individual);
+		IHierarchy<IConcept> types = world.retainIncluded(individual.getTypes().getEntites());
 		Set<IExpression> expressions = new HashSet<>();
-		for (INorm norm : norms) {
-			Set<OWLClass> types = reasoner.getTypes(owlIndividual, false).getFlattened();
-			for (OWLClass type : types) {
-				IExpression expression = world.getExpressionFor(new WorldTriple(CONCEPT.createFrom(type), property, concept), world.new NormContext(norm, ContextType.CONDITION)); 
+		for (IConcept type : types.getEntites()) {
+			for (INorm norm : norms) {
+				IExpression expression = world.getExpressionFor(new WorldTriple(type, property, concept), world.new NormContext(norm, ContextType.CONDITION)); 
 				if (expression != null) {
 					expressions.add(expression);
 				}
 			}
 		}
+		if (expressions.isEmpty()) return false;
 		for (IExpression expression : expressions) {
 			if (reasoner.hasType(owlIndividual, EXPRESSION.wrap(expression), false)) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	protected void updateTypes(final Individual individual, final Set<IConcept> types) {
+		Set<OWLClass> owlTypes = reasoner.getTypes(INDIVIDUAL.wrap(individual), false).getFlattened();
+		Set<IConcept> newTypes = new HashSet<>();
+		for (OWLClass owlType : owlTypes) {
+			if (!owlType.isAnonymous() && !owlType.isOWLNothing() && !owlType.isOWLThing()) {
+				newTypes.add(CONCEPT.createFrom(owlType));
+			}
+		}
+		types.clear();
+		types.addAll(newTypes);
+	}
+
+	@Override
+	public void updateIndividualTypes() {
+		Set<OWLNamedIndividual> individuals = baseOntology.getIndividualsInSignature(false);
+		for (OWLNamedIndividual individual : individuals) {
+			INDIVIDUAL.createFrom(individual).updateTypes();
+		}
+	}
+
+	@Override
+	protected boolean assertType(Individual individual, IConcept concept) {
+		Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
+		axioms.add(OWLManager.getOWLDataFactory().getOWLClassAssertionAxiom(CONCEPT.wrap(concept), INDIVIDUAL.wrap(individual)));
+		return insert(axioms, false);
 	}
 }

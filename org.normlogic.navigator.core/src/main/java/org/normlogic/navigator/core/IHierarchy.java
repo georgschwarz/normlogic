@@ -21,7 +21,7 @@ import java.util.Set;
  *
  * @param <T>
  */
-public interface IHierarchyMaker<T> {
+public interface IHierarchy<T> {
 	/**
 	 * Finds the top level entities of the given hierarchy.
 	 * 
@@ -37,4 +37,18 @@ public interface IHierarchyMaker<T> {
 	 * @return			a set of child entities.
 	 */
 	Set<T> getDirectChildEntitesOf(T entity);
+	
+	/**
+	 * Finds all entities, which does not have any child.
+	 * 
+	 * @return	a set of leaf entities
+	 */
+	Set<T> getLeafEntities();
+	
+	/**
+	 * Returns all included entites
+	 * 
+	 * @return a set of all included entities
+	 */
+	Set<T> getEntites();
 }

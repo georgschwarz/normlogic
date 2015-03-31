@@ -1,17 +1,17 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1426778207266
-Build-Jdk: 1.7.0_51
-Built-By: gschwarz
+Bnd-LastModified: 1427831269984
+Build-Jdk: 1.7.0_72
+Built-By: GSchwarz
 Bundle-ManifestVersion: 2
 Bundle-Name: org.normlogic.3rd.hermit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.normlogic.3rd.hermit
-Bundle-Version: 0.0.1.201503191515
+Bundle-Version: 0.0.1.mavenbuildtimestamp
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.semanticweb.HermiT;uses:="org.semanticweb.owlapi.rea
  soner,org.semanticweb.owlapi.model,org.semanticweb.owlapi.apibinding,or
  g.semanticweb.owlapi.vocab,org.semanticweb.owlapi.util,org.semanticweb.
- owlapi.reasoner.impl";version="0.0.1.201503191515"
+ owlapi.reasoner.impl";version="0.0.1.mavenbuildtimestamp"
 Ignore-Package: javax.xml.stream,org.apache.axiom.om.impl.builder,org.ap
  ache.axiom.om
 Import-Package: javax.swing,javax.swing.event,javax.swing.text,javax.swi

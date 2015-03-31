@@ -25,5 +25,5 @@ public interface INeighborhoodViewer {
 	 * @param property	the property of the triple
 	 * @param concepts	the range of the triple
 	 */
-	void add(IProperty property, IHierarchyMaker<IConcept> concepts);
+	void add(IProperty property, IHierarchy<IConcept> concepts);
 }

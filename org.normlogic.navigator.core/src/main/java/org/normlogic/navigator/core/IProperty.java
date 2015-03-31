@@ -19,7 +19,7 @@ package org.normlogic.navigator.core;
  * @author Georg Schwarz
  *
  */
-public interface IProperty {
+public interface IProperty extends Comparable<IProperty> {
 	/**
 	 * Gives a human readable name of the relation.
 	 * 

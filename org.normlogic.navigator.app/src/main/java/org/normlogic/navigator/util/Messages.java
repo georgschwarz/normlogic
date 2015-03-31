@@ -11,6 +11,7 @@ public class Messages extends NLS {
 	public static String ContextMenu_DeleteAssertion;
 	public static String ContextMenu_DeleteIndividual;
 	public static String ContextMenu_Pursue;
+	public static String ContextMenu_Specialize;
 	public static String LibraryPart_Titel;
 	static {
 		// initialize resource bundle

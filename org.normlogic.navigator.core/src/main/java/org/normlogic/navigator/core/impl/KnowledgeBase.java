@@ -36,7 +36,6 @@ public abstract class KnowledgeBase implements IKnowledgeBase {
 	protected abstract IIndividual getIndividual(String name);
 	protected abstract IIndividual getSubjectOfTriple(IAssertionTriple triple);
 	protected abstract IIndividual getObjectOfTriple(IAssertionTriple triple);
-	protected abstract Set<IConcept> getTypes(IIndividual individual);
 	protected abstract Set<IConcept> getAssertedTypes(IIndividual individual);
 	protected abstract Set<INorm> getNorms(Ontology ontology);
 	protected abstract String getTextOf(Norm norm);
@@ -45,5 +44,7 @@ public abstract class KnowledgeBase implements IKnowledgeBase {
 	protected abstract boolean hasNormToBeFullfilled(INorm norm);
 	protected abstract boolean hasNormToBeFullfilled(INorm norm, IIndividual individual);
 	protected abstract boolean hasIndividualAssertion(IIndividual individual, IProperty property, IConcept concept);
-	protected abstract boolean hasIndividualPursuedTriple(IIndividual individual, Set<INorm> norms, IProperty property, IConcept concept);
+	protected abstract boolean dependNormedConclusionOnTriple(IIndividual individual, Set<INorm> norms, IProperty property, IConcept concept);
+	protected abstract void updateTypes(final Individual individual, final Set<IConcept> types);
+	protected abstract boolean assertType(Individual individual, IConcept concept);
 }

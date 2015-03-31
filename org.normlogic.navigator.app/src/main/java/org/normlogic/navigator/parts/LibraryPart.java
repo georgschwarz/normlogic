@@ -54,7 +54,7 @@ import org.normlogic.navigator.core.IKnowledgeBase;
 import org.normlogic.navigator.core.INorm;
 import org.normlogic.navigator.core.INormedWorld;
 import org.normlogic.navigator.core.IOntology;
-import org.normlogic.navigator.core.IPursuedNorms;
+import org.normlogic.navigator.core.IPursuedConclusion;
 import org.normlogic.navigator.core.ISituationViewer;
 import org.normlogic.navigator.core.ModelContainer;
 import org.normlogic.navigator.core.impl.NormedWorld;
@@ -69,7 +69,7 @@ public class LibraryPart {
 	TreeViewer treeViewer;
 	ModelContainer container;
 	INormedWorld normedWorld;
-	IPursuedNorms pursuedNorms;
+	IPursuedConclusion pursuedNorms;
 	
 	Set<INorm> selectedNorms = new HashSet<>();
 	final Set<IIndividual> individuals = new HashSet<>();
@@ -116,7 +116,7 @@ public class LibraryPart {
 	@Inject
 	@Optional
 	private void pursueNorm(@UIEventTopic(Event.PURSUE_NORM) 
-	    IPursuedNorms norms) {
+	    IPursuedConclusion norms) {
 		pursuedNorms = norms;
 		treeViewer.refresh();
 		// showNorm(norm);

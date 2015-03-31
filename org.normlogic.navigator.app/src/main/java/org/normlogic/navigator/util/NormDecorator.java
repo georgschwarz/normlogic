@@ -14,14 +14,14 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.normlogic.navigator.core.INorm;
-import org.normlogic.navigator.core.IPursuedNorms;
+import org.normlogic.navigator.core.IPursuedConclusion;
 
 public class NormDecorator {
 	INorm norm;
 	public NormDecorator(INorm norm) {
 		this.norm = norm;
 	}
-	public ImageDescriptor createImage(IPursuedNorms pursuedNorms) {
+	public ImageDescriptor createImage(IPursuedConclusion pursuedNorms) {
 		ImageDescriptor baseImage = IconPool.normDefault;
 		if (norm.hasToBeFulfilled()) {
 			baseImage = IconPool.normHasToBeFullfilled;
