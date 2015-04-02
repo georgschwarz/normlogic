@@ -67,32 +67,37 @@ public class Individual extends ModelEntity implements IIndividual {
 	}
 
 	@Override
-	public boolean isAssertableWithConcept(IProperty property, IConcept concept) {
-		return kb.isIndividualAssertableWithConcept(this, property, concept);
+	public boolean isAssertableWithTriple(IProperty property, IConcept concept) {
+		return kb.isIndividualAssertableWithTriple(this, property, concept);
 	}
 
 	@Override
-	public Set<INorm> getContextNorms(INormedWorld world, IProperty property, IConcept concept) {
+	public boolean isAssertableWithType(final IConcept concept) {
+		return kb.isIndividualAssertableWithType(this, concept);
+	}
+
+
+	@Override
+	public Set<INorm> getContextNorms(IProperty property, IConcept concept) {
 		Set<INorm> result = new HashSet<>();
-		if (world instanceof NormedWorld) {
-			NormedWorld normedWorld = (NormedWorld)world;
-			Set<IConcept> types = kb.getAssertedTypes(this);
-			for (IConcept domain : types) {
-				result.addAll(normedWorld.getNormsFor(new WorldTriple(domain, property, concept), NormedWorld.ContextType.CONDITION));
-			}
+		NormedWorld normedWorld = kb.getNormedWorld();
+		for (IConcept domain : types) {
+			result.addAll(normedWorld.getNormsFor(new WorldTriple(domain, property, concept), NormContext.CONDITION));
 		}
 		return result;
 	}
 
 	@Override
-	public Set<INorm> getObligationNorms(INormedWorld world, IProperty property, IConcept concept) {
+	public Set<INorm> getObligationNorms(IProperty property, IConcept concept) {
 		Set<INorm> result = new HashSet<>();
-		if (world instanceof NormedWorld) {
-			NormedWorld normedWorld = (NormedWorld)world;
-			Set<IConcept> types = kb.getAssertedTypes(this);
-			for (IConcept domain : types) {
-				result.addAll(normedWorld.getNormsFor(new WorldTriple(domain, property, concept), NormedWorld.ContextType.OBLIGATION));
-			}
+		NormedWorld normedWorld = kb.getNormedWorld();
+		Set<IConcept> concepts = new HashSet<>();
+		concepts.addAll(types);
+		for (IConcept type : types) {
+			concepts.addAll(normedWorld.retainIncluded(kb.getSubClassesOf(type, false)).getEntites());
+		}
+		for (IConcept domain : concepts) {
+			result.addAll(normedWorld.getNormsFor(new WorldTriple(domain, property, concept), NormContext.OBLIGATION));
 		}
 		return result;
 	}
@@ -103,27 +108,30 @@ public class Individual extends ModelEntity implements IIndividual {
 	}
 
 	@Override
-	public Set<INorm> getContextNorms(INormedWorld world) {
+	public Set<INorm> getContextNorms(final IConcept subType) {
 		Set<INorm> result = new HashSet<>();
-		if (world instanceof NormedWorld) {
-			NormedWorld normedWorld = (NormedWorld)world;
-			Set<IConcept> types = kb.getAssertedTypes(this);
-			for (IConcept domain : types) {
-				result.addAll(normedWorld.getNormsFor(domain, NormedWorld.ContextType.CONDITION));
-			}
+		NormedWorld normedWorld = kb.getNormedWorld();
+		result.addAll(normedWorld.getNormsFor(subType, NormContext.CONDITION));
+		return result;
+	}
+
+
+	@Override
+	public Set<INorm> getContextNorms() {
+		Set<INorm> result = new HashSet<>();
+		NormedWorld normedWorld = kb.getNormedWorld();
+		for (IConcept domain : types) {
+			result.addAll(normedWorld.getNormsFor(domain, NormContext.CONDITION));
 		}
 		return result;
 	}
 
 	@Override
-	public Set<INorm> getObligationNorms(INormedWorld world) {
+	public Set<INorm> getObligationNorms() {
 		Set<INorm> result = new HashSet<>();
-		if (world instanceof NormedWorld) {
-			NormedWorld normedWorld = (NormedWorld)world;
-			Set<IConcept> types = kb.getAssertedTypes(this);
-			for (IConcept domain : types) {
-				result.addAll(normedWorld.getNormsFor(domain, NormedWorld.ContextType.OBLIGATION));
-			}
+		NormedWorld normedWorld = kb.getNormedWorld();
+		for (IConcept domain : types) {
+			result.addAll(normedWorld.getNormsFor(domain, NormContext.OBLIGATION));
 		}
 		return result;
 	}
@@ -156,5 +164,23 @@ public class Individual extends ModelEntity implements IIndividual {
 	@Override
 	public boolean assertType(final IConcept concept) {
 		return kb.assertType(this, concept);		
+	}
+
+	@Override
+	public boolean hasType(final IConcept concept) {
+		return types.contains(concept);
+	}
+
+	@Override
+	public boolean hasNotType(final IConcept concept) {
+		if (types.contains(concept)) return false;
+		return kb.checkForNegativeType(this, concept);
+	}
+
+	
+	@Override
+	public boolean removeType(final IConcept concept) {
+		if (!types.contains(concept)) return true;
+		return kb.removeType(this, concept);		
 	}
 }

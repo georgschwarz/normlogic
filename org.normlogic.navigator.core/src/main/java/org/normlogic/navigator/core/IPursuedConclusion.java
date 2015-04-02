@@ -37,19 +37,6 @@ public interface IPursuedConclusion {
 	boolean contains(INorm norm);
 	
 	/**
-	 * Checks if a given relation subject to an individual is relevant for the
-	 * fulfillment of the pursued norms.
-	 * 
-	 * @param world			normed world in which the checked relation resides
-	 * @param individual	individual which is base of the checked relation
-	 * @param property		property of the relation triple
-	 * @param concept		range concept of the relation triple
-	 * @return				true if the given relation is relevant to fulfill the pursued norms,
-	 * 						false if not.
-	 */
-	boolean relevantFor(INormedWorld world, IIndividual individual, IProperty property, IConcept concept);
-	
-	/**
 	 * Checks if a given individual has to be substantiated for the fulfillment
 	 * of the pursued norms.
 	 * 
@@ -62,6 +49,8 @@ public interface IPursuedConclusion {
 	boolean dependsOn(IIndividual individual, IProperty property, IConcept concept);
 	
 	boolean dependsOn(IIndividual individual);
+	
+	boolean dependsON(final IIndividual individual, final IConcept subType);
 	
 	/**
 	 * Helper method to get the pursued Norms.

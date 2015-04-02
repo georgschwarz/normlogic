@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.normlogic.navigator.parts;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -189,13 +188,30 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
 			super(Messages.ContextMenu_Specialize);
 			this.concept = concept;
 			this.individual = individual;
+			if (individual.hasNotType(concept)) {
+				setEnabled(false);
+			}
 		}
 		@Override
 	    public void run() {
 			individual.assertType(concept);
 		}
 	}
-
+	
+	class RemoveSpecializeIndividualAction extends Action {
+		private final IConcept concept;
+		private final IIndividual individual;
+		public RemoveSpecializeIndividualAction(final IIndividual individual, final IConcept concept) {
+			super(Messages.ContextMenu_RemoveSpecialize);
+			this.concept = concept;
+			this.individual = individual;
+		}
+		@Override
+	    public void run() {
+			individual.removeType(concept);
+		}
+	}
+	
 	class AddAssertionAction extends Action  {
         
         private final IIndividual individual;
@@ -313,17 +329,6 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
 								ActionContributionItem actionItem = (ActionContributionItem)o;
 								IAction action = actionItem.getAction();
 								action.run();
-								/*
-								if (action instanceof ShowNormAction) {
-									INorm norm = ((ShowNormAction)action).norm;
-									DefaultToolTip toolTip = new DefaultToolTip(graphViewer.getControl());
-									String text = norm.getLabel() + "\n\n" + norm.getText();
-									toolTip.setText(text);
-									Point cursorLocation = Display.getCurrent().getCursorLocation();
-									cursorLocation.y = cursorLocation.y + 10;
-									toolTip.show(Display.getCurrent().getFocusControl().toControl(cursorLocation));
-								}
-								*/
 							}
 						}
 					});
@@ -391,18 +396,18 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
     		
     		super(concept.getLabel());
             
-    		boolean isAssertable = individual.isAssertableWithConcept(property, concept);
+    		boolean isAssertable = individual.isAssertableWithTriple(property, concept);
             AddAssertionAction action = new AddAssertionAction(individual, property, concept, isAssertable);
             add(action);
             add(new Separator());
             
-            Set<INorm> contextNorms = individual.getContextNorms(currentWorld, property, concept);
+            Set<INorm> contextNorms = individual.getContextNorms(property, concept);
             if (!contextNorms.isEmpty()) {
             	add(new ContextNormMenu(contextNorms));
             	state = state | INCONTEXT;
             }
             
-            Set<INorm> obligationNorms = individual.getObligationNorms(currentWorld, property, concept);
+            Set<INorm> obligationNorms = individual.getObligationNorms(property, concept);
             if (!obligationNorms.isEmpty()) {
 	            ObligationNormMenu obligationMenu = new ObligationNormMenu(individual, property, concept, obligationNorms);
 	            add(obligationMenu);
@@ -416,15 +421,6 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
             
             if (pursuedConclusion != null && isAssertable) {
             	isPursued = pursuedConclusion.dependsOn(individual, property, concept);
-            	/*
-            	if (pursuedNorms.relevantFor(currentWorld, individual, property, concept)) {
-            		if (!individual.hasAssertion(property, concept)) {
-            			if (individual.hasPursuedTriple(pursuedNorms, property, concept)) {
-            				isPursued =  true;
-            			}
-            		}
-            	}
-            	*/
             }
 
             for (IConcept subConcept : conceptHierarchy.getDirectChildEntitesOf(concept)) {
@@ -460,17 +456,38 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
 
     class SpecializeMenu extends MenuManager {
     	
+    	int state = NONE;
+    	
     	SpecializeMenu(final IIndividual individual, final IConcept concept) {
     		
-        	super(concept.getLabel());
-        	add(new SpecializeIndividualAction(individual, concept));
-
+    		super(concept.getLabel());
+    		
+        	if(individual.hasType(concept)) {
+        		setImageDescriptor(IconPool.overlayOk);
+        		add(new RemoveSpecializeIndividualAction(individual, concept));
+        	}
+        	else {
+        		add(new SpecializeIndividualAction(individual, concept));
+               	if (pursuedConclusion != null) {
+	               	if (pursuedConclusion.dependsON(individual, concept)) {
+	               		state = state | HASTOBESPECIALIZED;
+	               	}
+               	}
+        	}
+        	
         	Set<IConcept> subConcepts = currentWorld.retainIncluded(concept.getSubConcepts(true)).getEntites();
         	if (!subConcepts.isEmpty()) {
         		add(new Separator());
             	for (IConcept subConcept : subConcepts) {
             		add(new SpecializeMenu(individual, subConcept));
             	}
+        	}
+        	add(new Separator());
+        	Set<INorm> norms = individual.getContextNorms(concept);
+        	add(new ContextNormMenu(norms));
+        	
+        	if ((state & HASTOBESPECIALIZED)>0) {
+        		setImageDescriptor(IconPool.overlayStar);
         	}
     	}
     }
@@ -507,12 +524,17 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         MenuManager specializeMenu = new MenuManager(Messages.ContextMenu_Specialize);
         menu.add(specializeMenu);
         IHierarchy<IConcept> types = currentWorld.retainIncluded(individual.getTypes().getEntites());
-        
+        int state = NONE;
         for (IConcept concept : types.getTopLevelEntities()) {
         	IHierarchy<IConcept> subConcepts = currentWorld.retainIncluded(concept.getSubConcepts(true));
         	for (IConcept subConcept : subConcepts.getEntites()) {
-        		specializeMenu.add(new SpecializeMenu(individual, subConcept));
+        		SpecializeMenu subSpecializeMenu = new SpecializeMenu(individual, subConcept); 
+        		specializeMenu.add(subSpecializeMenu);
+        		state = state | subSpecializeMenu.state;
         	}
+        }
+        if ((state & HASTOBESPECIALIZED)>0) {
+        	specializeMenu.setImageDescriptor(IconPool.overlayStar);
         }
 
         if (!specializeMenu.isEmpty()) {
@@ -534,6 +556,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
 	static int INCONCLUSION = 2;
 	static int HASTOBEFULLFILLED = 4;
 	static int FULLFILLED = 8;
+	static int HASTOBESPECIALIZED = 16;
     
    
     @Override

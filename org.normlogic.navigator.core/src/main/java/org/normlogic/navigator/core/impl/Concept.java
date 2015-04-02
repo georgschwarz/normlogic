@@ -65,8 +65,13 @@ public class Concept extends ModelEntity implements IConcept {
 	public Set<INorm> getObligationNorms(INormedWorld currentWorld) {
 		Set<INorm> result = new HashSet<>();
 		if (currentWorld instanceof NormedWorld) {
-			result.addAll(((NormedWorld) currentWorld).getNormsFor(this, NormedWorld.ContextType.OBLIGATION));
+			result.addAll(((NormedWorld) currentWorld).getNormsFor(this, NormContext.OBLIGATION));
 		}
 		return result;
+	}
+
+	@Override
+	public boolean isSubClassOf(Set<IConcept> types) {
+		return kb.isSubClassOf(this, types);
 	}
 }

@@ -150,7 +150,7 @@ public class SituationPart implements ISituationViewer {
         	tooltip = tooltip + type.getLabel() + "\n";
         }
         graphNode.setTooltip(new Label(tooltip.trim()));
-        Set<INorm> norms = individual.getObligationNorms(normedWorld);
+        Set<INorm> norms = individual.getObligationNorms();
         ImageDescriptor image;
         if (norms.isEmpty()) {
         	image = IconPool.tripleInContext;
@@ -179,7 +179,7 @@ public class SituationPart implements ISituationViewer {
    		}
    		final Map<IProperty, IConcept> pursuedRelations = new HashMap<>();
         if (pursuedConclusion != null) {
-	        if (pursuedConclusion.relevantFor(normedWorld, individual)) {
+	        if (pursuedConclusion.dependsOn(individual)) {
 	        	individual.renderNeighborhood(normedWorld, new INeighborhoodViewer() {
 					@Override
 					public void add(IProperty property, IHierarchy<IConcept> concepts) {

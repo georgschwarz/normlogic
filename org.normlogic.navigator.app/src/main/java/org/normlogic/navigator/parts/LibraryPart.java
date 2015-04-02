@@ -151,7 +151,7 @@ public class LibraryPart {
 	@Inject
 	public void setText(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) IIndividual individual) {
 		if (individual != null && normedWorld != null) {
-			selectedNorms = individual.getContextNorms(normedWorld);
+			selectedNorms = individual.getContextNorms();
 			treeViewer.refresh();
 		}
 	}

@@ -52,17 +52,9 @@ public class PursuedConclusion implements IPursuedConclusion {
 	}
 
 	@Override
-	public boolean relevantFor(INormedWorld world, IIndividual individual, IProperty property, IConcept concept) {
-		if (isAccomplished) return false;
-		Set<INorm> normsContext = individual.getContextNorms(world, property, concept);
-		normsContext.retainAll(norms);
-		return !normsContext.isEmpty();
-	}
-	
-	@Override
 	public boolean relevantFor(INormedWorld world, IIndividual individual) {
 		if (isAccomplished) return false;
-		Set<INorm> normsContext = individual.getContextNorms(world);
+		Set<INorm> normsContext = individual.getContextNorms();
 		normsContext.retainAll(norms);
 		return !normsContext.isEmpty();
 	}
@@ -85,7 +77,20 @@ public class PursuedConclusion implements IPursuedConclusion {
 	public boolean dependsOn(IIndividual individual, IProperty property,
 			IConcept concept) {
 		if (isAccomplished) return false;
-		return kb.dependNormedConclusionOnTriple(individual, norms, property, concept);
+		if (!kb.dependNormedConclusionOnTriple(individual, norms, property, concept)) {
+			return false;
+		}
+		if (individual.hasAssertion(property, concept)) {
+			return false;
+		}
+		NormedWorld world = kb.getNormedWorld();
+		Set<IConcept> superConcepts = world.retainIncluded(kb.getSuperClassesOf(concept, false)).getEntites();
+		for (IConcept superConcept : superConcepts) {
+			if (individual.hasAssertion(property, superConcept)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -95,11 +100,30 @@ public class PursuedConclusion implements IPursuedConclusion {
 		individual.renderNeighborhood(kb.getNormedWorld(), new INeighborhoodViewer() {
 			@Override
 			public void add(IProperty property, IHierarchy<IConcept> concepts) {
-				for (IConcept concept : concepts.getLeafEntities()) {
-					result.add(new Boolean(kb.dependNormedConclusionOnTriple(individual, norms, property, concept)));
+				for (IConcept concept : concepts.getEntites()) {
+					result.add(new Boolean(dependsOn(individual, property, concept)));
 				}
 			}
 		});
 		return result.contains(new Boolean(true));
+	}
+	
+	public boolean dependsON(final IIndividual individual, final IConcept subType) {
+		if (isAccomplished) return false;
+		Set<IConcept> concepts = new HashSet<>();
+		for (INorm norm : norms) {
+			Set<WorldTriple> triples = kb.getNormedWorld().getTriplesForNormContext(new NormContext(norm, NormContext.CONDITION));
+			for (WorldTriple triple: triples) {
+				concepts.add(triple.domain);
+				concepts.add(triple.range);
+			}
+		}
+		if (concepts.contains(subType)) {
+			final IHierarchy<IConcept> types = individual.getTypes();
+			if (subType.isSubClassOf(types.getEntites())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

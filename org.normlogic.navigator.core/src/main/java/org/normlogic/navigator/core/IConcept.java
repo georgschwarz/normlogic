@@ -65,4 +65,12 @@ public interface IConcept extends IModelEntity, Comparable<IConcept> {
 	 * @return				the set of norms, in which the concept is qualified by an obligation			
 	 */
 	Set<INorm> getObligationNorms(INormedWorld currentWorld);
+
+	/**
+	 * Convenient method to check if this concept is a subclass of the given concepts.
+	 * 
+	 * @param types set of concepts 
+	 * @return	true if this concept is a subclass of one of the given concepts.
+	 */
+	boolean isSubClassOf(Set<IConcept> types);
 }

@@ -36,12 +36,11 @@ import org.normlogic.navigator.core.impl.Individual;
 import org.normlogic.navigator.core.impl.IndividualAssertionTriple;
 import org.normlogic.navigator.core.impl.KnowledgeBase;
 import org.normlogic.navigator.core.impl.Norm;
+import org.normlogic.navigator.core.impl.NormContext;
 import org.normlogic.navigator.core.impl.NormedWorld;
 import org.normlogic.navigator.core.impl.Ontology;
 import org.normlogic.navigator.core.impl.Property;
 import org.normlogic.navigator.core.impl.WorldTriple;
-import org.normlogic.navigator.core.impl.NormedWorld.ContextType;
-import org.normlogic.navigator.core.impl.NormedWorld.NormContext;
 import org.normlogic.navigator.core.util.LoadException;
 import org.normlogic.navigator.core.util.Tracker;
 import org.semanticweb.HermiT.Configuration;
@@ -240,8 +239,8 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 	 
 	
 	
-	private void registerExpressionToNormedWorld(NormedWorld world, OWLClass expression, OWLAnnotationProperty property, ContextType type) {
-		final Set<NormedWorld.NormContext> normedContext = new HashSet<>();
+	private void registerExpressionToNormedWorld(NormedWorld world, OWLClass expression, OWLAnnotationProperty property, NormContext.Type type) {
+		final Set<NormContext> normedContext = new HashSet<>();
 		for (OWLOntology ontology : loadedOntologies) {
 			Set<OWLAnnotation> annotations = new HashSet<>();
 			annotations.addAll(expression.getAnnotations(ontology, property));
@@ -250,7 +249,7 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 					IRI iri = (IRI)annotation.getValue();
 					INorm norm = NORM.createFrom(OWLManager.getOWLDataFactory().getOWLNamedIndividual(iri));
 					world.mapNormToOntology(ONTOLOGY.wrapFromValue(ontology), norm);
-					NormedWorld.NormContext normContext = world.new NormContext(norm, type);
+					NormContext normContext = new NormContext(norm, type);
 					normedContext.add(normContext);
 					normContextToExpression.put(normContext, expression);
 				}
@@ -262,7 +261,7 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 	}
 	
 	NormedWorld world = new NormedWorld(this);
-	Map<NormedWorld.NormContext, OWLClass> normContextToExpression = new HashMap<>(); 
+	Map<NormContext, OWLClass> normContextToExpression = new HashMap<>(); 
 	final OWLAnnotationProperty propertyContext = OWLManager.getOWLDataFactory().getOWLAnnotationProperty(IRI.create(getIRI().toString() + "#kontext_von"));
 	final OWLAnnotationProperty propertyObligation = OWLManager.getOWLDataFactory().getOWLAnnotationProperty(IRI.create(getIRI().toString() + "#verpflichtend_durch"));
 	
@@ -297,10 +296,10 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 		
 		
 		for (OWLClass context : expressionsContext) {
-			registerExpressionToNormedWorld(world, context, propertyContext, ContextType.CONDITION);
+			registerExpressionToNormedWorld(world, context, propertyContext, NormContext.CONDITION);
 		}
 		for (OWLClass obligation : expressionsObligation) {
-			registerExpressionToNormedWorld(world, obligation, propertyObligation, ContextType.OBLIGATION);
+			registerExpressionToNormedWorld(world, obligation, propertyObligation, NormContext.OBLIGATION);
 		}
 		return world;
 	}
@@ -365,7 +364,7 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 
 	}
 
-	public boolean isIndividualAssertableWithConcept(IIndividual individual, IProperty property, IConcept concept) {
+	public boolean isIndividualAssertableWithTriple(IIndividual individual, IProperty property, IConcept concept) {
 
 		OWLNamedIndividual owlIndividual = INDIVIDUAL.wrap(individual);
 		OWLObjectProperty owlProperty = PROPERTY.wrap(property);
@@ -395,6 +394,12 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 		return !reasoner.hasType(owlIndividual, /* expressionCheck*/ expressionNegCardinality, false);
 	}
 
+	@Override
+	protected boolean isIndividualAssertableWithType(final Individual individual, final IConcept concept) {
+		Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
+		axioms.add(OWLManager.getOWLDataFactory().getOWLClassAssertionAxiom(CONCEPT.wrap(concept), INDIVIDUAL.wrap(individual)));
+		return insert(axioms, true);
+	}
 
 	@Override
 	protected String getLabelOf(IConcept concept) {
@@ -457,6 +462,16 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 		return subConcepts;
 	}
 
+	@Override
+	protected Set<IConcept> getSuperClassesOf(IConcept concept, boolean direct) {
+		Set<IConcept> superConcepts = new TreeSet<>();
+		Set<OWLClass> superClasses = reasoner.getSuperClasses(CONCEPT.wrap(concept), direct).getFlattened();
+		for (OWLClass superClass : superClasses) {
+			superConcepts.add(CONCEPT.createFrom(superClass));
+		}
+		return superConcepts;
+	}
+
 
 	@Override
 	protected boolean addIndividualAssertion(IIndividual subject,
@@ -491,6 +506,13 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 			});
 		}
 		return result;
+	}
+	
+	@Override
+	protected boolean checkForNegativeType(final IIndividual individual, final IConcept concept) {
+		OWLNamedIndividual owlIndidivdual = INDIVIDUAL.wrap(individual);
+		OWLClassExpression owlExpression = CONCEPT.wrap(concept).getObjectComplementOf();
+		return reasoner.hasType(owlIndidivdual, owlExpression, false);
 	}
 
 	@Override
@@ -595,7 +617,7 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 	}
 
 	@Override
-	public INormedWorld getNormedWorld() {
+	public NormedWorld getNormedWorld() {
 		return world;
 	}
 
@@ -617,8 +639,8 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 
 	@Override
 	protected boolean isNormFullfilled(Norm norm, IIndividual individual) {
-		OWLClass condition = normContextToExpression.get(world.new NormContext(norm, ContextType.CONDITION));
-		OWLClass obligation = normContextToExpression.get(world.new NormContext(norm, ContextType.OBLIGATION));
+		OWLClass condition = normContextToExpression.get(new NormContext(norm, NormContext.CONDITION));
+		OWLClass obligation = normContextToExpression.get(new NormContext(norm, NormContext.OBLIGATION));
 		OWLNamedIndividual owlIndividual = INDIVIDUAL.wrap(individual);
 		if (owlIndividual == null) return false;
 		if (condition == null) return false;
@@ -629,8 +651,8 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 
 	@Override
 	protected boolean hasNormToBeFullfilled(INorm norm, IIndividual individual) {
-		OWLClass condition = normContextToExpression.get(world.new NormContext(norm, ContextType.CONDITION));
-		OWLClass obligation = normContextToExpression.get(world.new NormContext(norm, ContextType.OBLIGATION));
+		OWLClass condition = normContextToExpression.get(new NormContext(norm, NormContext.CONDITION));
+		OWLClass obligation = normContextToExpression.get(new NormContext(norm, NormContext.OBLIGATION));
 		OWLNamedIndividual owlIndividual = INDIVIDUAL.wrap(individual);
 		if (owlIndividual == null) return false;
 		if (condition == null) return false;
@@ -641,8 +663,8 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 	
 	@Override
 	protected boolean isNormFullfilled(INorm norm) {
-		OWLClass condition = normContextToExpression.get(world.new NormContext(norm, ContextType.CONDITION));
-		OWLClass obligation = normContextToExpression.get(world.new NormContext(norm, ContextType.OBLIGATION));
+		OWLClass condition = normContextToExpression.get(new NormContext(norm, NormContext.CONDITION));
+		OWLClass obligation = normContextToExpression.get(new NormContext(norm, NormContext.OBLIGATION));
 		if (condition == null) return false;
 		NodeSet<OWLNamedIndividual> nodes = reasoner.getInstances(condition, false);
 		for (OWLNamedIndividual individual : nodes.getFlattened()) {
@@ -656,8 +678,8 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 
 	@Override
 	protected boolean hasNormToBeFullfilled(INorm norm) {
-		OWLClass condition = normContextToExpression.get(world.new NormContext(norm, ContextType.CONDITION));
-		OWLClass obligation = normContextToExpression.get(world.new NormContext(norm, ContextType.OBLIGATION));
+		OWLClass condition = normContextToExpression.get(new NormContext(norm, NormContext.CONDITION));
+		OWLClass obligation = normContextToExpression.get(new NormContext(norm, NormContext.OBLIGATION));
 		if (condition == null) return false;
 		NodeSet<OWLNamedIndividual> nodes = reasoner.getInstances(condition, false);
 		for (OWLNamedIndividual individual : nodes.getFlattened()) {
@@ -696,12 +718,13 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 
 	@Override
 	protected boolean dependNormedConclusionOnTriple(IIndividual individual, Set<INorm> norms, IProperty property, IConcept concept) {
+		
 		OWLNamedIndividual owlIndividual = INDIVIDUAL.wrap(individual);
 		IHierarchy<IConcept> types = world.retainIncluded(individual.getTypes().getEntites());
 		Set<IExpression> expressions = new HashSet<>();
 		for (IConcept type : types.getEntites()) {
 			for (INorm norm : norms) {
-				IExpression expression = world.getExpressionFor(new WorldTriple(type, property, concept), world.new NormContext(norm, ContextType.CONDITION)); 
+				IExpression expression = world.getExpressionFor(new WorldTriple(type, property, concept), new NormContext(norm, NormContext.CONDITION)); 
 				if (expression != null) {
 					expressions.add(expression);
 				}
@@ -743,4 +766,36 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 		axioms.add(OWLManager.getOWLDataFactory().getOWLClassAssertionAxiom(CONCEPT.wrap(concept), INDIVIDUAL.wrap(individual)));
 		return insert(axioms, false);
 	}
+
+	@Override
+	protected boolean removeType(Individual individual, IConcept concept) {
+		OWLNamedIndividual owlIndividual = INDIVIDUAL.wrap(individual);
+		OWLClass owlType = CONCEPT.wrap(concept);
+		Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
+		for (OWLClassAssertionAxiom axiom : baseOntology.getAxioms(AxiomType.CLASS_ASSERTION)) {
+			if (axiom.getIndividual().asOWLNamedIndividual().equals(owlIndividual) && axiom.getClassExpression().asOWLClass().equals(owlType)) {
+				axioms.add(axiom);
+				break;
+			}
+		}
+		if (axioms.isEmpty()) {
+			return true;
+		}
+		manager.removeAxioms(baseOntology, axioms);
+		fireChangeEvent();
+		return true;
+	}
+
+	@Override
+	protected boolean isSubClassOf(IConcept concept, Set<IConcept> types) {
+		OWLClass owlClass = CONCEPT.wrap(concept);
+		Set<OWLClass> subClasses = reasoner.getSuperClasses(owlClass, false).getFlattened();
+		for (IConcept type : types) {
+			if (subClasses.contains(CONCEPT.wrap(type))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

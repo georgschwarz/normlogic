@@ -13,6 +13,9 @@ package org.normlogic.navigator.core;
 
 import java.util.Set;
 
+import org.normlogic.navigator.core.impl.NormContext;
+import org.normlogic.navigator.core.impl.WorldTriple;
+
 /**
  * A normed world is an universe of possible concepts and relations, which 
  * are relevant to a set of norms.
@@ -44,4 +47,6 @@ public interface INormedWorld {
 	 * @return set of concepts found in the normed world
 	 */
 	IHierarchy<IConcept> retainIncluded(final Set<IConcept> concepts);
+	
+	Set<WorldTriple> getTriplesForNormContext(NormContext normContext);
 }

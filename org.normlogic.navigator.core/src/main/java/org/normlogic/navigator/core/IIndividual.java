@@ -65,7 +65,15 @@ public interface IIndividual {
 	 * @param concept	the range concept of the triple
 	 * @return			true if the assertion is possible in a consistent way, false if not
 	 */
-	boolean isAssertableWithConcept(IProperty property, IConcept concept);
+	boolean isAssertableWithTriple(IProperty property, IConcept concept);
+	
+	/**
+	 * Look up whether the individual could be asserted to the given type.
+	 * 
+	 * @param concept the given type
+	 * @return true if type is assertable, false if knowledge base would get inconsistent.
+	 */
+	boolean isAssertableWithType(final IConcept concept);
 	
 	/**
 	 * Checks if an assertion to the typed triple exists. 
@@ -80,32 +88,39 @@ public interface IIndividual {
 	 * A convenient method to get the norms, in which the individual in respect to a given
 	 * abstract triple is part of the condition.
 	 * 
-	 * @param world		the given normed world
 	 * @param property	the property of the triple
 	 * @param concept	the concept of the triple
 	 * @return			set of norms
 	 */
-	Set<INorm> getContextNorms(INormedWorld world, IProperty property, IConcept concept);
+	Set<INorm> getContextNorms(IProperty property, IConcept concept);
 	
 	/**
 	 * A convenient method to get the norms, in which the individual in respect to a given
 	 * abstract triple is part of the conclusion.
 	 * 
-	 * @param world		the given normed world
 	 * @param property	the property of the triple
 	 * @param concept	the concept of the triple
 	 * @return			set of norms
 	 */
-	Set<INorm> getObligationNorms(INormedWorld world, IProperty property, IConcept concept);
+	Set<INorm> getObligationNorms(IProperty property, IConcept concept);
+	
+	
+	/**
+	 * A convenient method to get the norms, in which the individual in respect to a given
+	 * subtype is part of the condition of the current loaded normed world.
+	 * 
+	 * @param subType subType to check
+	 * @return
+	 */
+	public Set<INorm> getContextNorms(final IConcept subType);
 	
 	/**
 	 * A convenient method to get the norms, in which the individual is part of the condition
 	 * of the given normed world.
 	 * 
-	 * @param world		the given normed world
 	 * @return			set of norms
 	 */
-	Set<INorm> getContextNorms(INormedWorld world);
+	Set<INorm> getContextNorms();
 	
 	/**
 	 * A convenient method to get the norms, in which the individual is part of the conclusion
@@ -114,7 +129,7 @@ public interface IIndividual {
 	 * @param world		the given normed world
 	 * @return			set of norms
 	 */
-	Set<INorm> getObligationNorms(INormedWorld world);
+	Set<INorm> getObligationNorms();
 	
 	/**
 	 * Pursue the given norms in respect to this individual. 
@@ -154,4 +169,29 @@ public interface IIndividual {
 	 * @return	true is assertion succeeded, false if not.
 	 */
 	boolean assertType(final IConcept concept);
+	
+	/**
+	 * Remove the type of this individual
+	 * 
+	 * @param concept type to be removed
+	 * @return true if type removal succeeded, false if not.
+	 */
+	boolean removeType(final IConcept concept);
+	
+	/**
+	 * Check if Individual has the given type asserted.
+	  
+	 * @param concept the type to be checked
+	 * @return true if type is asserted, false if not.
+	 */
+	boolean hasType(final IConcept concept);
+	
+	/**
+	 * Check if Individual has the given type asserted.
+	  
+	 * @param concept the type to be checked
+	 * @return true if type is asserted, false if not.
+	 */
+	boolean hasNotType(final IConcept concept);
+
 }

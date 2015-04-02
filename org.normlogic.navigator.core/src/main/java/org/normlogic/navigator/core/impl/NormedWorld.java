@@ -24,6 +24,8 @@ import org.normlogic.navigator.core.INorm;
 import org.normlogic.navigator.core.INormedWorld;
 import org.normlogic.navigator.core.IOntology;
 import org.normlogic.navigator.core.IProperty;
+import org.normlogic.navigator.core.IWorldTriple;
+import org.normlogic.navigator.core.impl.NormContext.Type;
 
 public class NormedWorld implements INormedWorld {
 	
@@ -41,50 +43,20 @@ public class NormedWorld implements INormedWorld {
 		else return new HashSet<INorm>();
 	}
 
-	public enum ContextType {
-		CONDITION, OBLIGATION
-	} 
-	
-	public class NormContext {
-		private ContextType type;
-		private INorm norm;
-		public NormContext(INorm norm, ContextType type) {
-			this.type = type;
-			this.norm = norm;
-		}
-	   @Override
-	    public int hashCode() {
-	        int hash = 7;
-	        hash = 17 * hash + ((type == null) ? 0 : type.hashCode());
-	        hash = 17 * hash + ((norm == null) ? 0 : norm.hashCode());
-	        return hash;
-	    }
-	    @Override
-	    public boolean equals(final Object obj) {
-	        if (this == obj) return true;
-	        if (obj == null) return false;
-	        if (getClass() != obj.getClass()) return false;
-	        NormContext other = (NormContext)obj;
-	        if (type == null && other.type != null) return false;
-	        if (norm == null && other.norm != null) return false;
-	        if (!type.equals(other.type)) return false;
-	        if (!norm.equals(other.norm)) return false;
-	        return true;
-	    }
-	}
-	
 	Set<WorldTriple> triples = new HashSet<>();
 	Map<IConcept, Set<WorldTriple>> triplesByDomain = new HashMap<>();
 	Map<IProperty, Set<WorldTriple>> triplesByProperty = new HashMap<>();
 	Map<IConcept, Set<WorldTriple>> triplesByRange = new HashMap<>();
 	
 	Map<WorldTriple, Set<NormContext>> normsByTriple = new HashMap<>();
+	Map<NormContext, Set<WorldTriple>> triplesByNormContext = new HashMap<>();
+	
 	Map<NormedTriple, IExpression> expressionByNormedTriple = new HashMap<>();
 	
 	class NormedTriple {
-		WorldTriple triple;
+		IWorldTriple triple;
 		NormContext normContext;
-		NormedTriple(WorldTriple triple, NormContext normContext) {
+		NormedTriple(IWorldTriple triple, NormContext normContext) {
 			this.triple = triple;
 			this.normContext = normContext;
 		}
@@ -110,7 +82,7 @@ public class NormedWorld implements INormedWorld {
 	}
 
 	
-	public WorldTriple addWorldTriple(WorldTriple newTriple) {
+	public IWorldTriple addWorldTriple(WorldTriple newTriple) {
 		// add triple
 		triples.add(newTriple);
 		// create index maps
@@ -134,6 +106,14 @@ public class NormedWorld implements INormedWorld {
 			normsByTriple.put(triple, new HashSet<NormContext>());
 		}
 		normsByTriple.get(triple).addAll(normContext);
+
+		for (NormContext singleContext : normContext) {
+			if (!triplesByNormContext.containsKey(singleContext)) {
+				triplesByNormContext.put(singleContext,  new HashSet<WorldTriple>());
+			}
+			triplesByNormContext.get(singleContext).add(triple);
+		}
+		
 		for (NormContext nc : normContext) {
 			NormedTriple normedTriple = new NormedTriple(triple, nc);
 			expressionByNormedTriple.put(normedTriple, expression);
@@ -166,7 +146,7 @@ public class NormedWorld implements INormedWorld {
 		return result;
 	}
 	
-	Set<INorm> getNormsFor(WorldTriple triple, ContextType type) {
+	Set<INorm> getNormsFor(IWorldTriple triple, Type type) {
 		Set<INorm> norms = new HashSet<>();
 		Set<NormContext> normedContext = normsByTriple.get(triple);
 		if (normedContext != null) {
@@ -179,20 +159,20 @@ public class NormedWorld implements INormedWorld {
 		return norms;
 	}
 	
-	Set<INorm> getNormsFor(IConcept concept, ContextType type) {
+	Set<INorm> getNormsFor(IConcept concept, Type type) {
 		Set<INorm> norms = new HashSet<>();
 		Set<WorldTriple> triplesDomain = triplesByDomain.get(concept);
 		// Set<WorldTriple> triplesRange = triplesByRange.get(concept);
 		Set<WorldTriple> triples = new HashSet<>();
 		if (triplesDomain != null) triples.addAll(triplesDomain);
 		// if (triplesRange != null) triples.addAll(triplesRange);
-		for (WorldTriple triple : triples) {
+		for (IWorldTriple triple : triples) {
 			norms.addAll(getNormsFor(triple, type));
 		}
 		return norms;
 	}
 	
-	public IExpression getExpressionFor(WorldTriple triple, NormContext context) {
+	public IExpression getExpressionFor(IWorldTriple triple, NormContext context) {
 		return expressionByNormedTriple.get(new NormedTriple(triple, context));
 	}
 
@@ -214,6 +194,14 @@ public class NormedWorld implements INormedWorld {
 		triples.addAll(triplesByProperty.get(property));
 		triples.retainAll(triplesByRange.get(concept));
 		return triples;
+	}
+	
+	public Set<WorldTriple> getTriplesForNormContext(NormContext normContext) {
+		Set<WorldTriple> result = triplesByNormContext.get(normContext);
+		if (result == null) {
+			return new HashSet<WorldTriple>();
+		}
+		return result; 
 	}
 
 	@Override

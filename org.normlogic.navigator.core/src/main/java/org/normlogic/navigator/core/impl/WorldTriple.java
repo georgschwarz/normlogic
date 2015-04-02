@@ -12,9 +12,10 @@ package org.normlogic.navigator.core.impl;
 
 import org.normlogic.navigator.core.IConcept;
 import org.normlogic.navigator.core.IProperty;
+import org.normlogic.navigator.core.IWorldTriple;
 
 
-public class WorldTriple {
+public class WorldTriple implements IWorldTriple {
 	
 	IConcept domain;
 	IProperty property;
@@ -47,4 +48,18 @@ public class WorldTriple {
         if (!range.equals(other.range)) return false;
         return true;
     }
+	@Override
+	public IConcept getDomain() {
+		return domain;
+	}
+	@Override
+	public IConcept getRange() {
+		// TODO Auto-generated method stub
+		return range;
+	}
+	@Override
+	public IProperty getProperty() {
+		// TODO Auto-generated method stub
+		return property;
+	}
 }
