@@ -65,7 +65,7 @@ public class Concept extends ModelEntity implements IConcept {
 	public Set<INorm> getObligationNorms(INormedWorld currentWorld) {
 		Set<INorm> result = new HashSet<>();
 		if (currentWorld instanceof NormedWorld) {
-			result.addAll(((NormedWorld) currentWorld).getNormsFor(this, NormContext.OBLIGATION));
+			result.addAll(((NormedWorld) currentWorld).getNormsFor(this, NormContext.OBLIGATION, false));
 		}
 		return result;
 	}

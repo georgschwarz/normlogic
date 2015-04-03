@@ -41,6 +41,18 @@ public class PursuedConclusion implements IPursuedConclusion {
 	}
 
 	@Override
+	public String toString() {
+		String text = new String();
+		text = individual.getLabel() + ": " + property.getLabel() + " -> " + concept.getLabel();
+		/*
+		for (INorm norm : norms) {
+			text = text + "\n" + norm.getLabel();
+		}
+		*/
+		return text;
+	}
+	
+	@Override
 	public void update() {
 		for (INorm norm : norms) {
 			if (norm.isFulfilledFor(individual) || norm.hasToBeFulfilledFor(individual)) {

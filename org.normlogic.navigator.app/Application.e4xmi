@@ -4,7 +4,7 @@
     <children xsi:type="advanced:PerspectiveStack" xmi:id="_kZajEKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.perspectivestack.0">
       <children xsi:type="advanced:Perspective" xmi:id="_lKVCoKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.perspective.0">
         <children xsi:type="basic:PartSashContainer" xmi:id="_U_JOQKrHEeSos_DhHne2zg" elementId="org.normlogic.navigator.app.partsashcontainer.1" horizontal="true">
-          <children xsi:type="basic:PartStack" xmi:id="_in474KrHEeSos_DhHne2zg" elementId="org.normlogic.navigator.app.partstack.2" containerData="2000">
+          <children xsi:type="basic:PartStack" xmi:id="_in474KrHEeSos_DhHne2zg" elementId="org.normlogic.navigator.app.partstack.2" containerData="1500">
             <children xsi:type="basic:Part" xmi:id="_L2JpcKrHEeSos_DhHne2zg" elementId="org.normlogic.navigator.app.part.loaded" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.parts.LibraryPart" label="Loaded"/>
           </children>
           <children xsi:type="basic:PartSashContainer" xmi:id="_sN1hoKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.partsashcontainer.0" containerData="4000">
@@ -31,6 +31,9 @@
                 </toolbar>
               </children>
             </children>
+          </children>
+          <children xsi:type="basic:PartStack" xmi:id="_toGXYNniEeS5sqENrhLjjA" elementId="org.normlogic.navigator.app.partstack.3" containerData="1500">
+            <children xsi:type="basic:Part" xmi:id="_bu7X0NldEeS6WrETNoK4bg" elementId="org.normlogic.navigator.app.part.pursue" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.parts.PursuePart" label="Pursue"/>
           </children>
         </children>
       </children>

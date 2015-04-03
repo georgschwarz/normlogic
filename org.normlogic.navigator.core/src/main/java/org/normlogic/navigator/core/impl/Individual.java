@@ -79,7 +79,7 @@ public class Individual extends ModelEntity implements IIndividual {
 
 	@Override
 	public Set<INorm> getContextNorms(IProperty property, IConcept concept) {
-		Set<INorm> result = new HashSet<>();
+		Set<INorm> result = new TreeSet<>();
 		NormedWorld normedWorld = kb.getNormedWorld();
 		for (IConcept domain : types) {
 			result.addAll(normedWorld.getNormsFor(new WorldTriple(domain, property, concept), NormContext.CONDITION));
@@ -89,7 +89,7 @@ public class Individual extends ModelEntity implements IIndividual {
 
 	@Override
 	public Set<INorm> getObligationNorms(IProperty property, IConcept concept) {
-		Set<INorm> result = new HashSet<>();
+		Set<INorm> result = new TreeSet<>();
 		NormedWorld normedWorld = kb.getNormedWorld();
 		Set<IConcept> concepts = new HashSet<>();
 		concepts.addAll(types);
@@ -111,7 +111,7 @@ public class Individual extends ModelEntity implements IIndividual {
 	public Set<INorm> getContextNorms(final IConcept subType) {
 		Set<INorm> result = new HashSet<>();
 		NormedWorld normedWorld = kb.getNormedWorld();
-		result.addAll(normedWorld.getNormsFor(subType, NormContext.CONDITION));
+		result.addAll(normedWorld.getNormsFor(subType, NormContext.CONDITION, true));
 		return result;
 	}
 
@@ -121,7 +121,7 @@ public class Individual extends ModelEntity implements IIndividual {
 		Set<INorm> result = new HashSet<>();
 		NormedWorld normedWorld = kb.getNormedWorld();
 		for (IConcept domain : types) {
-			result.addAll(normedWorld.getNormsFor(domain, NormContext.CONDITION));
+			result.addAll(normedWorld.getNormsFor(domain, NormContext.CONDITION, false));
 		}
 		return result;
 	}
@@ -131,7 +131,7 @@ public class Individual extends ModelEntity implements IIndividual {
 		Set<INorm> result = new HashSet<>();
 		NormedWorld normedWorld = kb.getNormedWorld();
 		for (IConcept domain : types) {
-			result.addAll(normedWorld.getNormsFor(domain, NormContext.OBLIGATION));
+			result.addAll(normedWorld.getNormsFor(domain, NormContext.OBLIGATION, false));
 		}
 		return result;
 	}

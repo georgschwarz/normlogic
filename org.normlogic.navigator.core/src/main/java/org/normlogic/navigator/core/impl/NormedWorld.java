@@ -159,13 +159,15 @@ public class NormedWorld implements INormedWorld {
 		return norms;
 	}
 	
-	Set<INorm> getNormsFor(IConcept concept, Type type) {
+	Set<INorm> getNormsFor(IConcept concept, Type type, boolean includeRange) {
 		Set<INorm> norms = new HashSet<>();
-		Set<WorldTriple> triplesDomain = triplesByDomain.get(concept);
-		// Set<WorldTriple> triplesRange = triplesByRange.get(concept);
 		Set<WorldTriple> triples = new HashSet<>();
+		Set<WorldTriple> triplesDomain = triplesByDomain.get(concept);
 		if (triplesDomain != null) triples.addAll(triplesDomain);
-		// if (triplesRange != null) triples.addAll(triplesRange);
+		if (includeRange) {
+			Set<WorldTriple> triplesRange = triplesByRange.get(concept);
+			if (triplesRange != null) triples.addAll(triplesRange);
+		}
 		for (IWorldTriple triple : triples) {
 			norms.addAll(getNormsFor(triple, type));
 		}
