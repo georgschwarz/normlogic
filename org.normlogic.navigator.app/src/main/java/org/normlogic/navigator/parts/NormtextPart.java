@@ -22,6 +22,7 @@ import org.eclipse.e4.ui.model.application.ui.MDirtyable;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,7 +36,8 @@ import org.normlogic.navigator.util.NormDecorator;
 public class NormtextPart {
 
 	CLabel txtLabel;
-	Text txtViewer;
+	// Text txtViewer;
+	Browser browser;
 	IPursuedConclusion pursuedNorms;
 	INorm norm;
 
@@ -52,8 +54,10 @@ public class NormtextPart {
 		txtLabel = new CLabel(parent, SWT.BOLD);
 		txtLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		txtViewer = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
-		txtViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
+		browser = new Browser(parent, SWT.BORDER);
+		browser.setLayoutData(new GridData(GridData.FILL_BOTH));
+		// txtViewer = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+		// txtViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
 	}
 	
 	@Inject
@@ -71,7 +75,8 @@ public class NormtextPart {
 			this.norm = norm;
 			txtLabel.setText(norm.getLabel());
 			txtLabel.setImage(new NormDecorator(norm).createImage(pursuedNorms).createImage());
-			txtViewer.setText(norm.getText());
+			browser.setUrl("file:///C:/Users/gschwarz/Akten/13011_CoC-DS/CoC_HTML/Art.%201%20Geltungsbereich.html"/*norm.getText()*/);
+			// txtViewer.setText(norm.getText());
 		}
 	}
 	
