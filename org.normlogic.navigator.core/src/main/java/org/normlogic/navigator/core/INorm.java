@@ -88,4 +88,6 @@ public interface INorm extends IModelEntity, Comparable<INorm> {
 	 * @return				true if norm has to be fulfilled, false if not.
 	 */
 	boolean hasToBeFulfilledFor(IIndividual individual);
+	
+	String getUrl();
 }

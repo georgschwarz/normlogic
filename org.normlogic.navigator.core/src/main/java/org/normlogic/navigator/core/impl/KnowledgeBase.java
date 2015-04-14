@@ -54,4 +54,5 @@ public abstract class KnowledgeBase implements IKnowledgeBase {
 	protected abstract boolean checkForNegativeType(final IIndividual individual, final IConcept concept);
 	protected abstract boolean isSubClassOf(final IConcept concept, final Set<IConcept> types);
 	public abstract NormedWorld getNormedWorld();
+	protected abstract String getUrl(Norm norm);
 }

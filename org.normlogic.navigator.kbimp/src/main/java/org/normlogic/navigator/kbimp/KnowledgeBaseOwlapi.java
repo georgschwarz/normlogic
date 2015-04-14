@@ -798,4 +798,10 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 		return false;
 	}
 
+	@Override
+	protected String getUrl(Norm norm) {
+		OWLNamedIndividual owlIndidivdual = NORM.wrap(norm);
+		return owlIndidivdual.getIRI().toString();
+	}
+
 }

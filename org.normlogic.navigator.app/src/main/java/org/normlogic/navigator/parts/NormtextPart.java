@@ -75,8 +75,7 @@ public class NormtextPart {
 			this.norm = norm;
 			txtLabel.setText(norm.getLabel());
 			txtLabel.setImage(new NormDecorator(norm).createImage(pursuedNorms).createImage());
-			browser.setUrl("file:///C:/Users/gschwarz/Akten/13011_CoC-DS/CoC_HTML/Art.%201%20Geltungsbereich.html"/*norm.getText()*/);
-			// txtViewer.setText(norm.getText());
+			browser.setUrl(norm.getUrl());
 		}
 	}
 	

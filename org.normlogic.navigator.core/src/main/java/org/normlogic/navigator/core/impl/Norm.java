@@ -53,4 +53,9 @@ public class Norm extends ModelEntity implements INorm {
 	public boolean hasToBeFulfilledFor(IIndividual individual) {
 		return kb.hasNormToBeFullfilled(this, individual);
 	}
+
+	@Override
+	public String getUrl() {
+		return kb.getUrl(this);
+	}
 }
