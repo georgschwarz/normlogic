@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.normlogic.navigator.core.Event;
+import org.normlogic.navigator.core.IKnowledgeBase;
 import org.normlogic.navigator.core.INorm;
 import org.normlogic.navigator.core.IPursuedConclusion;
 import org.normlogic.navigator.util.Messages;
@@ -102,6 +103,13 @@ public class PursuePart implements IStructuredContentProvider, ILabelProvider {
 			tableViewer.refresh();
 			partService.bringToTop(part);
 		}
+	}
+	
+	@Inject
+	@Optional
+	private void ontologyChanged(@UIEventTopic(Event.ONTOLOGY_CHANGED) 
+	    IKnowledgeBase kb) {
+		tableViewer.refresh();
 	}
 
 	@Override

@@ -10,6 +10,7 @@
           <children xsi:type="basic:PartSashContainer" xmi:id="_sN1hoKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.partsashcontainer.0" containerData="4000">
             <children xsi:type="basic:PartStack" xmi:id="_vFCYQKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.partstack.0" containerData="2000">
               <children xsi:type="basic:Part" xmi:id="_vdXYsKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.part.norms" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.parts.NormtextPart" label="Norms"/>
+              <children xsi:type="basic:Part" xmi:id="_uAZX4OOAEeSiY_YUBC5SiQ" elementId="org.normlogic.navigator.app.part.representation" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.parts.NormRepresentation" label="Representation"/>
             </children>
             <children xsi:type="basic:PartStack" xmi:id="_CGDyIKiHEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.partstack.1" containerData="4000">
               <children xsi:type="basic:Part" xmi:id="_v8Q7MKiGEeSdTcgam5EqnA" elementId="org.normlogic.navigator.app.part.situation" contributionURI="bundleclass://org.normlogic.navigator.app/org.normlogic.navigator.parts.SituationPart" label="Situation">

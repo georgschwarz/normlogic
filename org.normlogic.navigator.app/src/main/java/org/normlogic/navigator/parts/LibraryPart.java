@@ -72,7 +72,7 @@ public class LibraryPart {
 	IPursuedConclusion pursuedNorms;
 	
 	Set<INorm> selectedNorms = new HashSet<>();
-	final Set<IIndividual> individuals = new HashSet<>();
+	//final Set<IIndividual> individuals = new HashSet<>();
 	
 	@Inject
 	ESelectionService selectionService;
@@ -126,6 +126,8 @@ public class LibraryPart {
 	@Optional
 	private void ontologyChanged(@UIEventTopic(Event.ONTOLOGY_CHANGED) 
 	    IKnowledgeBase kb) {
+		treeViewer.refresh();
+		/*
 		kb.visualize(new ISituationViewer() {
 			
 			@Override
@@ -146,6 +148,7 @@ public class LibraryPart {
 				
 			}
 		});
+		*/
 	} 
 	
 	@Inject

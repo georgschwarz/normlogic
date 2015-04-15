@@ -10,6 +10,10 @@
  ******************************************************************************/
 package org.normlogic.navigator.core.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.normlogic.navigator.core.IConcept;
 import org.normlogic.navigator.core.IIndividual;
 import org.normlogic.navigator.core.INorm;
 
@@ -57,5 +61,15 @@ public class Norm extends ModelEntity implements INorm {
 	@Override
 	public String getUrl() {
 		return kb.getUrl(this);
+	}
+
+	@Override
+	public String getRepresentationCondition() {
+		return kb.renderNormExpression(this, NormContext.CONDITION);
+	}
+
+	@Override
+	public String getRepresentationConclusion() {
+		return kb.renderNormExpression(this, NormContext.OBLIGATION);
 	}
 }

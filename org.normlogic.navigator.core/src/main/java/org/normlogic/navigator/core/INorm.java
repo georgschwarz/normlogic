@@ -26,6 +26,7 @@
  */
 package org.normlogic.navigator.core;
 
+
 /**
  * A Norm is the core entity of normlogic. It is the reification of an entity
  * which qualify something in the sense of what should be. A qualification is for 
@@ -90,4 +91,7 @@ public interface INorm extends IModelEntity, Comparable<INorm> {
 	boolean hasToBeFulfilledFor(IIndividual individual);
 	
 	String getUrl();
+
+	String getRepresentationCondition();
+	String getRepresentationConclusion();
 }

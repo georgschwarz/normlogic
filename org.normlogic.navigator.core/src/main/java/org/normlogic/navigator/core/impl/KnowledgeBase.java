@@ -55,4 +55,5 @@ public abstract class KnowledgeBase implements IKnowledgeBase {
 	protected abstract boolean isSubClassOf(final IConcept concept, final Set<IConcept> types);
 	public abstract NormedWorld getNormedWorld();
 	protected abstract String getUrl(Norm norm);
+	protected abstract String renderNormExpression(Norm norm, NormContext.Type type);
 }

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1427998555353
+Bnd-LastModified: 1429125073358
 Build-Jdk: 1.7.0_72
 Built-By: GSchwarz
 Bundle-Description: The OWL API is a Java API and reference implementati
@@ -13,7 +13,7 @@ Bundle-Name: org.normlogic.3rd.owlapi
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.normlogic.3rd.owlapi
 Bundle-Vendor: The University of Manchester
-Bundle-Version: 0.0.1.mavenbuildtimestamp
+Bundle-Version: 0.0.1.201504152110
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.semanticweb.owlapi.model;uses:="org.semanticweb.owla
  pi.change,org.semanticweb.owlapi.vocab,javax.swing,org.semanticweb.owla
@@ -46,14 +46,17 @@ Export-Package: org.semanticweb.owlapi.model;uses:="org.semanticweb.owla
  i.model,org.semanticweb.owlapi.reasoner.impl,org.semanticweb.owlapi.rea
  soner,org.semanticweb.owlapi.util";version="3.5.1",org.semanticweb.owla
  pi.apibinding;uses:="org.semanticweb.owlapi.vocab,org.semanticweb.owlap
- i.model,org.semanticweb.owlapi.util,org.semanticweb.owlapi.io";version=
- "3.5.1",org.semanticweb.owlapi.metrics;uses:="org.semanticweb.owlapi.mo
- del,org.semanticweb.owlapi.util,org.semanticweb.owlapi.reasoner";versio
- n="3.5.1",org.semanticweb.owlapi.atomicdecomposition;version="3.5.1",or
- g.semanticweb.owlapi.change;uses:="org.semanticweb.owlapi.model";versio
- n="3.5.1",org.semanticweb.owlapi.rdf.syntax;uses:="org.xml.sax,org.sema
- nticweb.owlapi.model,org.semanticweb.owlapi.rdf.util,javax.xml.parsers,
- org.xml.sax.helpers";version="3.5.1"
+ i.model,org.semanticweb.owlapi.util,org.semanticweb.owlapi.io,uk.ac.man
+ chester.cs.owl.owlapi.mansyntaxrenderer";version="3.5.1",org.semanticwe
+ b.owlapi.metrics;uses:="org.semanticweb.owlapi.model,org.semanticweb.ow
+ lapi.util,org.semanticweb.owlapi.reasoner";version="3.5.1",org.semantic
+ web.owlapi.atomicdecomposition;version="3.5.1",org.semanticweb.owlapi.c
+ hange;uses:="org.semanticweb.owlapi.model";version="3.5.1",org.semantic
+ web.owlapi.rdf.syntax;uses:="org.xml.sax,org.semanticweb.owlapi.model,o
+ rg.semanticweb.owlapi.rdf.util,javax.xml.parsers,org.xml.sax.helpers";v
+ ersion="3.5.1",uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer;uses:="
+ org.semanticweb.owlapi.io,org.semanticweb.owlapi.model,org.semanticweb.
+ owlapi.util,org.semanticweb.owlapi.vocab";version="3.5.1"
 Ignore-Package: org.semanticweb.owlapi.rdf.syntax,org.semanticweb.owlapi
  .vocab,org.semanticweb.owlapi.io,org.semanticweb.owlapi.expression,org.
  semanticweb.owlapi.modularity,sun.misc,org.semanticweb.owlapi.reasoner

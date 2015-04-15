@@ -23,10 +23,15 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.browser.LocationListener;
+import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.browser.ProgressListener;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.normlogic.navigator.core.Event;
 import org.normlogic.navigator.core.INorm;
@@ -56,8 +61,18 @@ public class NormtextPart {
 
 		browser = new Browser(parent, SWT.BORDER);
 		browser.setLayoutData(new GridData(GridData.FILL_BOTH));
-		// txtViewer = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
-		// txtViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
+		browser.addProgressListener(new ProgressListener() {
+			
+			@Override
+			public void completed(ProgressEvent event) {
+				browser.execute("window.scrollBy(0,-50)");
+			}
+			
+			@Override
+			public void changed(ProgressEvent event) {
+				// TODO Auto-generated method stub
+			}
+		});
 	}
 	
 	@Inject

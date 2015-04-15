@@ -37,7 +37,7 @@
       		<instructions>
       			<Bundle-SymbolicName>$(project.artifactId)</Bundle-SymbolicName>
       			<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
-        		<Export-Package>org.semanticweb.*</Export-Package>
+        		<Export-Package>org.semanticweb.*,uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer</Export-Package>
         		<Private-Package>*</Private-Package>
         		<Import-Package>!org.semanticweb.*,!sun.misc,*</Import-Package>
         		<Bundle-Version>0.0.1.${maven.build.timestamp}</Bundle-Version>

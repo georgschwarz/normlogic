@@ -1,5 +1,6 @@
 package org.normlogic.navigator.core.impl;
 
+import org.normlogic.navigator.core.IExpression;
 import org.normlogic.navigator.core.INorm;
 
 public class NormContext {
@@ -11,6 +12,8 @@ public class NormContext {
 	public static Type CONDITION = Type.condition;
 	public static Type OBLIGATION = Type.obligation;
 	
+	IExpression expression;
+	
 	Type type;
 	INorm norm;
 	
@@ -18,6 +21,7 @@ public class NormContext {
 		this.type = type;
 		this.norm = norm;
 	}
+	
    @Override
     public int hashCode() {
         int hash = 7;

@@ -37,6 +37,7 @@ import org.normlogic.navigator.core.impl.IndividualAssertionTriple;
 import org.normlogic.navigator.core.impl.KnowledgeBase;
 import org.normlogic.navigator.core.impl.Norm;
 import org.normlogic.navigator.core.impl.NormContext;
+import org.normlogic.navigator.core.impl.NormContext.Type;
 import org.normlogic.navigator.core.impl.NormedWorld;
 import org.normlogic.navigator.core.impl.Ontology;
 import org.normlogic.navigator.core.impl.Property;
@@ -84,6 +85,8 @@ import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.ReasonerProgressMonitor;
 import org.semanticweb.owlapi.util.OWLClassExpressionVisitorAdapter;
 import org.semanticweb.owlapi.util.SimpleIRIMapper;
+
+import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 
 public class KnowledgeBaseOwlapi extends KnowledgeBase {
 
@@ -802,6 +805,22 @@ public class KnowledgeBaseOwlapi extends KnowledgeBase {
 	protected String getUrl(Norm norm) {
 		OWLNamedIndividual owlIndidivdual = NORM.wrap(norm);
 		return owlIndidivdual.getIRI().toString();
+	}
+
+	@Override
+	protected String renderNormExpression(Norm norm, Type type) {
+		String result = new String();
+		OWLClass definitionClass = normContextToExpression.get(new NormContext(norm, type));
+		if (definitionClass != null) {
+			ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
+			for (OWLClassExpression equivalent : definitionClass.getEquivalentClasses(loadedOntologies)) {
+				if (!result.isEmpty()) {
+					result = result + "\n";
+				}
+				result = result + renderer.render(equivalent);
+			}
+		}
+		return result;
 	}
 
 }

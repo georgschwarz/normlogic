@@ -14,6 +14,8 @@ public class Messages extends NLS {
 	public static String ContextMenu_Specialize;
 	public static String ContextMenu_RemoveSpecialize;
 	public static String LibraryPart_Titel;
+	public static String NormRepresentationPart_Condition;
+	public static String NormRepresentationPart_Conclusion;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
