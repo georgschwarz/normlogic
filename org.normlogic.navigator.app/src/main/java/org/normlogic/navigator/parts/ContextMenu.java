@@ -259,6 +259,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         
         @Override
         public void run() {
+            node.unhighlight();
             node.dispose();
             individual.deleteFromKnowledgeBase();
         }
@@ -525,7 +526,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         menu.add(specializeMenu);
         IHierarchy<IConcept> types = currentWorld.retainIncluded(individual.getTypes().getEntites());
         int state = NONE;
-        for (IConcept concept : types.getTopLevelEntities()) {
+        for (IConcept concept : types.getLeafEntities()) {
         	IHierarchy<IConcept> subConcepts = currentWorld.retainIncluded(concept.getSubConcepts(true));
         	for (IConcept subConcept : subConcepts.getEntites()) {
         		SpecializeMenu subSpecializeMenu = new SpecializeMenu(individual, subConcept); 

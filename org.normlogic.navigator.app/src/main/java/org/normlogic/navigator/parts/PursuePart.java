@@ -90,6 +90,9 @@ public class PursuePart implements IStructuredContentProvider, ILabelProvider {
 				StructuredSelection selection = new StructuredSelection(norm);
 				tableViewer.setSelection(selection);
 			}
+			else {
+				tableViewer.setSelection(StructuredSelection.EMPTY);
+			}
 		}
 	}
 	
