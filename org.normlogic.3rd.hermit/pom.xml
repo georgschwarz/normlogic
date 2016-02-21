@@ -45,8 +45,7 @@
         		<Export-Package>org.semanticweb.HermiT</Export-Package>
         		<Private-Package>org.semanticweb.HermiT.*, rationals.*,org.apache.axiom.c14n.*</Private-Package>
         		<Bundle-Version>0.0.1.${maven.build.timestamp}</Bundle-Version>
-        		<Include-Resource>@automaton.jar</Include-Resource>
-        		<Import-Package>!dk.brics.automaton.*,!javax.xml.stream,!org.apache.axiom.om.*,*</Import-Package>
+        		<Import-Package>!javax.xml.stream,!org.apache.axiom.om.*,*</Import-Package>
       		</instructions>
     	</configuration>
 	</plugin>

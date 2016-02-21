@@ -25,6 +25,11 @@
   	  <artifactId>guava</artifactId>
   	  <version>18.0</version>
   	</dependency>
+  	<dependency>
+  	  <groupId>dk.brics.automaton</groupId>
+  	  <artifactId>automaton</artifactId>
+  	  <version>1.11-8</version>
+  	</dependency>
   </dependencies>
   <properties>
     <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
@@ -52,8 +57,10 @@
    		  <instructions>
    			<Bundle-SymbolicName>$(project.artifactId)</Bundle-SymbolicName>
    			<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
-     		<Export-Package>javax.annotation.*,org.apache.commons.io.*,org.apache.commons.lang3.*,com.google.common.collect.Lists</Export-Package>
-       		<Import-Package>!sun.misc,!javax.annotation,*</Import-Package>
+     		<Export-Package>dk.brics.*,javax.annotation.*,org.apache.commons.io.*,org.apache.commons.lang3.*,com.google.common.collect.Lists</Export-Package>
+     		<Private-Package>*</Private-Package>
+     		<Import-Package>!sun.misc,!javax.annotation,*</Import-Package>
+     		<Include-Resource></Include-Resource>
        		<Bundle-Version>0.0.1.${maven.build.timestamp}</Bundle-Version>
    	 	  </instructions>	          
    	 	</configuration>
