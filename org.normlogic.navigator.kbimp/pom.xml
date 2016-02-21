@@ -22,6 +22,11 @@
  	 <artifactId>org.normlogic.3rd.hermit</artifactId>
   	 <version>0.0.1-SNAPSHOT</version>
     </dependency>
+     <dependency>
+     <groupId>org.normlogic.navigate</groupId>
+ 	 <artifactId>org.normlogic.3rd.lib</artifactId>
+  	 <version>0.0.1-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>org.normlogic.navigate</groupId>
 	  <artifactId>org.normlogic.3rd.owlapi</artifactId>

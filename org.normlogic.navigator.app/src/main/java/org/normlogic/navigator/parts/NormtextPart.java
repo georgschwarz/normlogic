@@ -21,6 +21,7 @@ import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.e4.ui.model.application.ui.MDirtyable;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationEvent;
@@ -60,6 +61,7 @@ public class NormtextPart {
 		txtLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		browser = new Browser(parent, SWT.BORDER);
+		// TODO: sudo apt-get install libwebkitgtk-1.0-0 to get it work on ubuntu 15.10 
 		browser.setLayoutData(new GridData(GridData.FILL_BOTH));
 		browser.addProgressListener(new ProgressListener() {
 			
@@ -83,6 +85,13 @@ public class NormtextPart {
 		setText(norm);
 	} 
 
+	@Inject
+	@Optional
+	private void showNorm(@UIEventTopic(Event.SHOW_NORM) 
+	    INorm norm) {
+		if (norm != null) {
+		}
+	} 
 
 	@Inject
 	public void setText(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) INorm norm) {

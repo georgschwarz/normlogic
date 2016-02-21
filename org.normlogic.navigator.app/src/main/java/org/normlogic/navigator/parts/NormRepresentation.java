@@ -77,6 +77,14 @@ public class NormRepresentation {
 	} 
 	
 	@Inject
+	@Optional
+	private void showNorm(@UIEventTopic(Event.SHOW_NORM) 
+	    INorm norm) {
+		if (norm != null) {
+		}
+	} 
+	
+	@Inject
 	public void setText(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) INorm norm) {
 		if (norm != null) {
 			this.norm = norm;

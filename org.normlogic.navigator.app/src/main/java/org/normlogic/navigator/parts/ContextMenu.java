@@ -167,7 +167,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
 			concept.createAssertedIndividual(new IAddEntityDialog() {
 				@Override
 				public String runDialog(String initialValue) {
-					 InputDialog dialog = new InputDialog(graphViewer.getControl().getShell(), "Hinzufügen", "Name für " + concept.getLabel(),initialValue, null); //$NON-NLS-1$ //$NON-NLS-2$
+					 InputDialog dialog = new InputDialog(graphViewer.getControl().getShell(), "Hinzufï¿½gen", "Name fï¿½r " + concept.getLabel(),initialValue, null); //$NON-NLS-1$ //$NON-NLS-2$
 	                    int result = dialog.open();
 	                    if (result == Window.OK) {
 	                        return dialog.getValue();
@@ -234,7 +234,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
                 @Override
                 public String runDialog(final String initialValue) {
                     
-                    InputDialog dialog = new InputDialog(graphViewer.getControl().getShell(), "Hinzufügen", "Name für " + concept.getLabel(),initialValue, null); //$NON-NLS-1$ //$NON-NLS-2$
+                    InputDialog dialog = new InputDialog(graphViewer.getControl().getShell(), "Hinzufï¿½gen", "Name fï¿½r " + concept.getLabel(),initialValue, null); //$NON-NLS-1$ //$NON-NLS-2$
                     int result = dialog.open();
                     if (result == Window.OK) {
                         return dialog.getValue();
@@ -452,6 +452,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         	}
         	
     		setImageDescriptor(findImageFor(state, isPursued));
+    		
     	}
     }
 
@@ -516,7 +517,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         if (!(data instanceof IIndividual)) {
             return;
         }
-        // let´s see if we have a world to describe a situation ...
+        // letï¿½s see if we have a world to describe a situation ...
         if (currentWorld == null) {
             return;
         }

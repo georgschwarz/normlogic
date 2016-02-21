@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1429125073358
-Build-Jdk: 1.7.0_72
-Built-By: GSchwarz
+Bnd-LastModified: 1456070313991
+Build-Jdk: 1.7.0_95
+Built-By: georg
 Bundle-Description: The OWL API is a Java API and reference implementati
  on for creating, manipulating and serialising OWL Ontologies. The lates
  t version of the API is focused towards OWL 2
@@ -13,7 +13,7 @@ Bundle-Name: org.normlogic.3rd.owlapi
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.normlogic.3rd.owlapi
 Bundle-Vendor: The University of Manchester
-Bundle-Version: 0.0.1.201504152110
+Bundle-Version: 0.0.1.201602211558
 Created-By: Apache Maven Bundle Plugin
 Export-Package: org.semanticweb.owlapi.model;uses:="org.semanticweb.owla
  pi.change,org.semanticweb.owlapi.vocab,javax.swing,org.semanticweb.owla
