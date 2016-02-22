@@ -291,7 +291,7 @@ class ContextMenu implements IMenuListener, IZoomableWorkbenchPart {
         }
         @Override
         public void run() {
-        	broker.send(Event.SHOW_NORM, norm);
+        	broker.post(Event.SHOW_NORM, norm);
         }
         
     }

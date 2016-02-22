@@ -76,16 +76,7 @@ public class NormRepresentation {
 		setText(norm);
 	} 
 	
-	@Inject
-	@Optional
-	private void showNorm(@UIEventTopic(Event.SHOW_NORM) 
-	    INorm norm) {
-		if (norm != null) {
-		}
-	} 
-	
-	@Inject
-	public void setText(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) INorm norm) {
+	private void selectNorm(INorm norm) {
 		if (norm != null) {
 			this.norm = norm;
 			if (txtLabel != null) {
@@ -96,5 +87,17 @@ public class NormRepresentation {
 				conclusionViewer.setText(norm.getRepresentationConclusion());
 			}
 		}
+	}
+	
+	@Inject
+	@Optional
+	private void showNorm(@UIEventTopic(Event.SHOW_NORM) 
+	    INorm norm) {
+		selectNorm(norm);
+	} 
+	
+	@Inject
+	public void setText(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) INorm norm) {
+		selectNorm(norm);
 	}
 }

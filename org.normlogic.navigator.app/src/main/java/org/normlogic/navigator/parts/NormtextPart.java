@@ -82,19 +82,10 @@ public class NormtextPart {
 	private void pursueNorm(@UIEventTopic(Event.PURSUE_NORM) 
 	    IPursuedConclusion norms) {
 		pursuedNorms = norms;
-		setText(norm);
+		// setText(norm);
 	} 
-
-	@Inject
-	@Optional
-	private void showNorm(@UIEventTopic(Event.SHOW_NORM) 
-	    INorm norm) {
-		if (norm != null) {
-		}
-	} 
-
-	@Inject
-	public void setText(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) INorm norm) {
+	
+	private void selectNorm(INorm norm) {
 		if (norm != null) {
 			this.norm = norm;
 			txtLabel.setText(norm.getLabel());
@@ -102,7 +93,20 @@ public class NormtextPart {
 			browser.setUrl(norm.getUrl());
 		}
 	}
-	
+
+	@Inject
+	@Optional
+	private void showNorm(@UIEventTopic(Event.SHOW_NORM) 
+	    INorm norm) {
+		selectNorm(norm);
+	} 
+
+
+	@Inject
+	public void setText(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) INorm norm) {
+		selectNorm(norm);
+	}
+
 	@Focus
 	public void setFocus() {
 		

@@ -75,16 +75,14 @@ public class PursuePart implements IStructuredContentProvider, ILabelProvider {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
-				broker.send(Event.SHOW_NORM, selection.getFirstElement());
-				// selectionService.setSelection(selection.getFirstElement());
+				selectionService.setSelection(selection.getFirstElement());
 			}
 		});
 		
 	}
 	
 	
-	@Inject
-	public void setSelection(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) INorm norm) {
+	private void selectNorm(INorm norm) {
 		if (norm != null && pursuedConclusion != null) {
 			if (pursuedConclusion.contains(norm)) {
 				StructuredSelection selection = new StructuredSelection(norm);
@@ -97,6 +95,11 @@ public class PursuePart implements IStructuredContentProvider, ILabelProvider {
 	}
 	
 	@Inject
+	public void setSelection(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) INorm norm) {
+		selectNorm(norm);
+	}
+	
+	@Inject
 	@Optional
 	private void pursueNorm(@UIEventTopic(Event.PURSUE_NORM) IPursuedConclusion pursuedConclusion) {
 		
@@ -106,6 +109,13 @@ public class PursuePart implements IStructuredContentProvider, ILabelProvider {
 			tableViewer.refresh();
 			partService.bringToTop(part);
 		}
+	}
+	
+	@Inject
+	@Optional
+	private void showNorm(@UIEventTopic(Event.SHOW_NORM) 
+	    INorm norm) {
+		selectNorm(norm);
 	}
 	
 	@Inject

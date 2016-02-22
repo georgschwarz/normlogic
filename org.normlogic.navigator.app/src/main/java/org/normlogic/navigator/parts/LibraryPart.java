@@ -21,7 +21,9 @@ import javax.inject.Named;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.e4.ui.services.IServiceConstants;
@@ -106,12 +108,20 @@ public class LibraryPart {
 	@Optional
 	private void showNorm(@UIEventTopic(Event.SHOW_NORM) 
 	    INorm norm) {
+		selectNorm(norm);
+	} 
+	
+	@Inject
+	public void setSelection(@Optional @Named(IServiceConstants.ACTIVE_SELECTION) INorm norm) {
+		selectNorm(norm);
+	}
+
+	private void selectNorm(INorm norm) {
 		if (norm != null) {
 			StructuredSelection selection = new StructuredSelection(norm);
-			treeViewer.getTree().setFocus();
 			treeViewer.setSelection(selection);
 		}
-	} 
+	}
 
 	@Inject
 	@Optional
