@@ -1,19 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.normlogic.navigate</groupId>
   <artifactId>org.normlogic.navigator.core</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <parent>
+    <groupId>org.normlogic.navigate</groupId>
+    <artifactId>org.normlogic.navigator.parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../org.normlogic.navigator.parent</relativePath>
+  </parent>
+ 
   <packaging>eclipse-plugin</packaging>
-  <properties>
-    <tycho-version>0.22.0</tycho-version>
-  </properties>
-  <repositories>  
-  	<repository>  
-   	  <id>Juno</id>  
-      <layout>p2</layout>  
-      <url>http://download.eclipse.org/releases/juno/</url>  
-     </repository>  
-  </repositories>  
+ 
   <build>
     <plugins>
       <plugin>
@@ -24,17 +20,6 @@
           <target>1.7</target>
         </configuration>
       </plugin>
-      <plugin>  
-        <groupId>org.eclipse.tycho</groupId>  
-        <artifactId>tycho-maven-plugin</artifactId>  
-        <version>${tycho-version}</version>  
-        <extensions>true</extensions>  
-      </plugin>  
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>target-platform-configuration</artifactId>
-	    <version>${tycho-version}</version>
-      </plugin>
-    </plugins>
+     </plugins>
   </build>
 </project>

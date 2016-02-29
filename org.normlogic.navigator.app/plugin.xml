@@ -2,30 +2,6 @@
 <plugin>
 
    <extension
-         id="product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            name="org.normlogic.navigator"
-            application="org.eclipse.e4.ui.workbench.swt.E4Application">
-         <property
-               name="applicationCSS"
-               value="platform:/plugin/org.normlogic.navigator.app/css/default.css">
-         </property>
-         <property
-               name="appName"
-               value="org.normlogic.navigator">
-         </property>
-         <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
-         </property>
-         <property
-               name="windowImages"
-               value="icons/16/graph.png">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.eclipse.ui.decorators">
       <decorator
             class="org.normlogic.navigator.parts.LibraryPart$LibraryLabelProvider"
@@ -37,14 +13,22 @@
       </decorator>
    </extension>
    <extension
-         id="Hansi"
+         id="MyProduct"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.eclipse.ant.core.antRunner"
+            application="org.eclipse.e4.ui.workbench.swt.E4Application"
             name="org.normlogic.navigator">
          <property
                name="windowImages"
                value="icons/16/graph.png">
+         </property>
+         <property
+               name="applicationXMI"
+               value="org.normlogic.navigator.app/Application.e4xmi">
+         </property>
+         <property
+               name="appName"
+               value="org.normlogic.navigator">
          </property>
       </product>
    </extension>

@@ -1,24 +1,24 @@
 Manifest-Version: 1.0
 Ant-Version: Apache Ant 1.7.0
-Bnd-LastModified: 1456070319937
+Bnd-LastModified: 1456692738336
 Build-Jdk: 1.7.0_95
 Built-By: georg
 Bundle-ManifestVersion: 2
 Bundle-Name: org.normlogic.3rd.lib
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: org.normlogic.3rd.lib
-Bundle-Version: 0.0.1.201602211558
+Bundle-Version: 0.0.1.201602282152
 Created-By: Apache Maven Bundle Plugin
-Export-Package: dk.brics.automaton;version="0.0.1.201602211558",javax.an
- notation;uses:="javax.annotation.meta";version="0.0.1.201602211558",jav
- ax.annotation.meta;uses:="javax.annotation";version="0.0.1.201602211558
- ",javax.annotation.concurrent;version="0.0.1.201602211558",org.apache.c
+Export-Package: dk.brics.automaton;version="0.0.1.201602282152",javax.an
+ notation;uses:="javax.annotation.meta";version="0.0.1.201602282152",jav
+ ax.annotation.meta;uses:="javax.annotation";version="0.0.1.201602282152
+ ",javax.annotation.concurrent;version="0.0.1.201602282152",org.apache.c
  ommons.io.filefilter;uses:="org.apache.commons.io";version="0.0.1.20160
- 2211558",org.apache.commons.io;uses:="org.apache.commons.io.filefilter,
- org.apache.commons.io.output";version="0.0.1.201602211558",org.apache.c
- ommons.io.output;uses:="org.apache.commons.io";version="0.0.1.201602211
- 558",org.apache.commons.io.input;uses:="org.apache.commons.io";version=
- "0.0.1.201602211558",org.apache.commons.lang3.event;uses:="org.apache.c
+ 2282152",org.apache.commons.io;uses:="org.apache.commons.io.filefilter,
+ org.apache.commons.io.output";version="0.0.1.201602282152",org.apache.c
+ ommons.io.output;uses:="org.apache.commons.io";version="0.0.1.201602282
+ 152",org.apache.commons.io.input;uses:="org.apache.commons.io";version=
+ "0.0.1.201602282152",org.apache.commons.lang3.event;uses:="org.apache.c
  ommons.lang3,org.apache.commons.lang3.reflect";version="3.3.2",org.apac
  he.commons.lang3.reflect;uses:="org.apache.commons.lang3,org.apache.com
  mons.lang3.builder";version="3.3.2",org.apache.commons.lang3.tuple;uses
